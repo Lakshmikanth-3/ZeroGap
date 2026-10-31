@@ -1,0 +1,6508 @@
+{
+ "report_version": 2,
+ "product": "ZeroGap — independent proof-of-solvency monitor for Strike Finance (not affiliated with Strike Finance)",
+ "network": "testnet",
+ "generated_at": "2026-10-31T21:01:34.613Z",
+ "code_commit": "e89d9fd5e0538839b85b2bf5ce2f85bc31137630",
+ "rules": [
+  "Reserves: on-chain balances of every Strike locker (Ethereum vault; Solana vault account, its treasury PDA and the named USDC token account, de-duplicated; both Cardano scripts).",
+  "Prices: Strike /price/v2/premiumIndex index price for ADA/ETH/SOL; Strike /v2/credit/collateral-assets for sUSDrf, LP_SUNDAE_USDCx_USDM and scaled aUSDC; fiat-redeemable stablecoins (USDC, USDT, USDCx, USDM) at the 1:1 peg by contract id; anything else unpriced and excluded.",
+  "Raw on-chain amounts of Credit custody assets are scaled with /v2/credit/settings raw_amount_scale.",
+  "Liabilities (everything withdrawable): Σ account equity = wallet_balance + unrealized_pnl of every non-vault leaderboard account plus discovered sub-accounts (founder, 23 Oct; margin_balance is not used because it leaves out isolated-margin positions; lockedRewards are inside wallet_balance and counted once), plus Σ depositor vault shares (/v2/vault/{id}/depositors; not inside equity), plus Σ stakingRewardBalance (withdrawable; not inside wallet_balance). Commission balances are withdrawable too; public source pending, listed as a pending line.",
+  "Vault accounts (vault_id / vault_ prefix) are excluded so nothing is double counted; their equity is a cross-check that should equal Σ depositor shares.",
+  "One price snapshot values every reserve row; it is taken right after the account scan and both are timestamped.",
+  "Status: Balanced within ±0.01%, Drift up to ±1%, Needs review beyond; a gap within the founder-stated in-transit amount is \"In transit\"."
+ ],
+ "sources": {
+  "strike_api": "https://api-v2-testnet.strikefinance.org",
+  "endpoints": [
+   "/stat/v1/stats/leaderboard",
+   "/v2/account",
+   "/v2/balances",
+   "/v2/vault/{id}/depositors",
+   "/price/v2/premiumIndex",
+   "/v2/credit/collateral-assets",
+   "/v2/credit/settings"
+  ],
+  "lockers": {
+   "ethereum": "0x879e450F2482a2DEcbd27176A4c177e69Bd7A0E6",
+   "solana": "Di862rQJwGgMLtrchoBfkcehEKXPpYnppeA9Gmxtasin",
+   "solanaProgram": "FSNjjtrZP2BiuPfyRjTWQUybN8QNnEQgUogho79SMzXt",
+   "solanaTokenAccounts": [],
+   "cardano": [
+    "addr_test1wpuakhm8ftcwy2t00vhxp3rmqev90cs5xqf6ynu7f7rxrrg4rlm70"
+   ]
+  }
+ },
+ "timing": {
+  "liability_scan": {
+   "started_at": "2026-10-31T21:00:35.839Z",
+   "finished_at": "2026-10-31T21:01:32.953Z"
+  },
+  "reserves_read_at": "2026-10-31T21:01:32.954Z",
+  "price_snapshot_at": "2026-10-31T21:01:34.446Z"
+ },
+ "reserves": {
+  "priced_usd": 96258.49,
+  "stale_prices": false,
+  "failed_chains": [],
+  "custody_scale": {
+   "applied": true
+  },
+  "rows": [
+   {
+    "chain": "ethereum",
+    "address": "0x879e450F2482a2DEcbd27176A4c177e69Bd7A0E6",
+    "owner": null,
+    "asset": "ETH",
+    "contract": null,
+    "raw": "2",
+    "decimals": 18,
+    "amount": 2e-18,
+    "price_usd": 2250.75582754,
+    "price_status": "priced",
+    "price_source": "https://api-v2-testnet.strikefinance.org/price/v2/premiumIndex",
+    "price_ts": 1793480494531,
+    "usd_value": 0
+   },
+   {
+    "chain": "ethereum",
+    "address": "0x879e450F2482a2DEcbd27176A4c177e69Bd7A0E6",
+    "owner": null,
+    "asset": "USDC",
+    "contract": "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+    "raw": "3499969624",
+    "decimals": 6,
+    "amount": 3499.969624,
+    "price_usd": 1,
+    "price_status": "priced",
+    "price_source": "peg 1:1 (fiat-redeemable stablecoin)",
+    "price_ts": 1793480494446,
+    "usd_value": 3499.97
+   },
+   {
+    "chain": "cardano",
+    "address": "addr_test1wpuakhm8ftcwy2t00vhxp3rmqev90cs5xqf6ynu7f7rxrrg4rlm70",
+    "owner": null,
+    "asset": "ADA",
+    "contract": null,
+    "raw": "479293826755",
+    "decimals": 6,
+    "amount": 479293.826755,
+    "price_usd": 0.1924356,
+    "price_status": "priced",
+    "price_source": "https://api-v2-testnet.strikefinance.org/price/v2/premiumIndex",
+    "price_ts": 1793480494531,
+    "usd_value": 92233.2
+   },
+   {
+    "chain": "cardano",
+    "address": "addr_test1wpuakhm8ftcwy2t00vhxp3rmqev90cs5xqf6ynu7f7rxrrg4rlm70",
+    "owner": null,
+    "asset": "Gqe@w_",
+    "contract": "e21aa20df0a1790a77519fc8cdb988103ea4b61b5ee1bedfd39f23820014df10d7c7a7db47ab71ef07f0aa65e6b0bcf9409977c183e85fe6f0a5feb6",
+    "raw": "300000000000",
+    "decimals": 0,
+    "amount": 300000000000,
+    "price_usd": null,
+    "price_status": "unpriced",
+    "price_source": "unknown asset: no price source",
+    "price_ts": 1793480494446,
+    "usd_value": null
+   },
+   {
+    "chain": "cardano",
+    "address": "addr_test1wpuakhm8ftcwy2t00vhxp3rmqev90cs5xqf6ynu7f7rxrrg4rlm70",
+    "owner": null,
+    "asset": "USDM",
+    "contract": "e21aa20df0a1790a77519fc8cdb988103ea4b61b5ee1bedfd39f23820014df105553444d",
+    "raw": "300000000000",
+    "decimals": 0,
+    "amount": 300000000000,
+    "price_usd": null,
+    "price_status": "unpriced",
+    "price_source": "unknown asset: no price source",
+    "price_ts": 1793480494446,
+    "usd_value": null
+   },
+   {
+    "chain": "cardano",
+    "address": "addr_test1wpuakhm8ftcwy2t00vhxp3rmqev90cs5xqf6ynu7f7rxrrg4rlm70",
+    "owner": null,
+    "asset": "USDM",
+    "contract": "3c4b81accc018581d6305a04c0b1094f6cdc8146aebdf7697ca4fe980014df105553444d",
+    "raw": "600000000000",
+    "decimals": 0,
+    "amount": 600000000000,
+    "price_usd": null,
+    "price_status": "unpriced",
+    "price_source": "unknown asset: no price source",
+    "price_ts": 1793480494446,
+    "usd_value": null
+   },
+   {
+    "chain": "cardano",
+    "address": "addr_test1wpuakhm8ftcwy2t00vhxp3rmqev90cs5xqf6ynu7f7rxrrg4rlm70",
+    "owner": null,
+    "asset": "USDM",
+    "contract": "e9d3d6a9ff0a7beba09f7ea8b795e4eb619f14cd0e5d6dadc391c6140014df105553444d",
+    "raw": "500000000",
+    "decimals": 0,
+    "amount": 500000000,
+    "price_usd": null,
+    "price_status": "unpriced",
+    "price_source": "unknown asset: no price source",
+    "price_ts": 1793480494446,
+    "usd_value": null
+   },
+   {
+    "chain": "cardano",
+    "address": "addr_test1wpuakhm8ftcwy2t00vhxp3rmqev90cs5xqf6ynu7f7rxrrg4rlm70",
+    "owner": null,
+    "asset": "USDM",
+    "contract": "46e96f3eb25f8b866d2a4604b34963880b267d910ae198438df7cb045553444d",
+    "raw": "1000000000",
+    "decimals": 0,
+    "amount": 1000000000,
+    "price_usd": null,
+    "price_status": "unpriced",
+    "price_source": "unknown asset: no price source",
+    "price_ts": 1793480494446,
+    "usd_value": null
+   },
+   {
+    "chain": "cardano",
+    "address": "addr_test1wpuakhm8ftcwy2t00vhxp3rmqev90cs5xqf6ynu7f7rxrrg4rlm70",
+    "owner": null,
+    "asset": "USDM",
+    "contract": "1884764125ed67fff330147fc73e4551a8b6f7bee7117948b44109620014df105553444d",
+    "raw": "100000000",
+    "decimals": 0,
+    "amount": 100000000,
+    "price_usd": null,
+    "price_status": "unpriced",
+    "price_source": "unknown asset: no price source",
+    "price_ts": 1793480494446,
+    "usd_value": null
+   },
+   {
+    "chain": "solana",
+    "address": "Di862rQJwGgMLtrchoBfkcehEKXPpYnppeA9Gmxtasin",
+    "owner": null,
+    "asset": "SOL",
+    "contract": null,
+    "raw": "7997040",
+    "decimals": 9,
+    "amount": 0.00799704,
+    "price_usd": 95.54925422,
+    "price_status": "priced",
+    "price_source": "https://api-v2-testnet.strikefinance.org/price/v2/premiumIndex",
+    "price_ts": 1793480494531,
+    "usd_value": 0.76
+   },
+   {
+    "chain": "solana",
+    "address": "AcS3B95KTNsZH3mpuhGz2UU5e9Y13Y5sowe7DzeWKM7s",
+    "owner": "Di862rQJwGgMLtrchoBfkcehEKXPpYnppeA9Gmxtasin",
+    "asset": "AcAigPuX2nJ4VAVXrh3dwP41Gw1dcoYxchoyAHoBjfqK",
+    "contract": "AcAigPuX2nJ4VAVXrh3dwP41Gw1dcoYxchoyAHoBjfqK",
+    "raw": "1000000000",
+    "decimals": 6,
+    "amount": 1000,
+    "price_usd": null,
+    "price_status": "unpriced",
+    "price_source": "unknown asset: no price source",
+    "price_ts": 1793480494446,
+    "usd_value": null
+   },
+   {
+    "chain": "solana",
+    "address": "C9pHeEkeg1eDtNSHr37UFTeYmQYVyAq4MVkjtqWEYshc",
+    "owner": "Di862rQJwGgMLtrchoBfkcehEKXPpYnppeA9Gmxtasin",
+    "asset": "9ns6vEGZCEu1qRvZrrTrR23Fd8F1wMijZaCvavFqnFx3",
+    "contract": "9ns6vEGZCEu1qRvZrrTrR23Fd8F1wMijZaCvavFqnFx3",
+    "raw": "760006400",
+    "decimals": 6,
+    "amount": 760.0064,
+    "price_usd": null,
+    "price_status": "unpriced",
+    "price_source": "unknown asset: no price source",
+    "price_ts": 1793480494446,
+    "usd_value": null
+   },
+   {
+    "chain": "solana",
+    "address": "6Chkc4f8Q4jynrqSopUvTvU6TaPH48UYbbT6GYSQX7dz",
+    "owner": null,
+    "asset": "SOL",
+    "contract": null,
+    "raw": "5489946562",
+    "decimals": 9,
+    "amount": 5.489946562,
+    "price_usd": 95.54925422,
+    "price_status": "priced",
+    "price_source": "https://api-v2-testnet.strikefinance.org/price/v2/premiumIndex",
+    "price_ts": 1793480494531,
+    "usd_value": 524.56
+   }
+  ],
+  "unpriced": [
+   {
+    "chain": "cardano",
+    "asset": "Gqe@w_",
+    "amount": 300000000000,
+    "reason": "unknown asset: no price source"
+   },
+   {
+    "chain": "cardano",
+    "asset": "USDM",
+    "amount": 300000000000,
+    "reason": "unknown asset: no price source"
+   },
+   {
+    "chain": "cardano",
+    "asset": "USDM",
+    "amount": 600000000000,
+    "reason": "unknown asset: no price source"
+   },
+   {
+    "chain": "cardano",
+    "asset": "USDM",
+    "amount": 500000000,
+    "reason": "unknown asset: no price source"
+   },
+   {
+    "chain": "cardano",
+    "asset": "USDM",
+    "amount": 1000000000,
+    "reason": "unknown asset: no price source"
+   },
+   {
+    "chain": "cardano",
+    "asset": "USDM",
+    "amount": 100000000,
+    "reason": "unknown asset: no price source"
+   },
+   {
+    "chain": "solana",
+    "asset": "AcAigPuX2nJ4VAVXrh3dwP41Gw1dcoYxchoyAHoBjfqK",
+    "amount": 1000,
+    "reason": "unknown asset: no price source"
+   },
+   {
+    "chain": "solana",
+    "asset": "9ns6vEGZCEu1qRvZrrTrR23Fd8F1wMijZaCvavFqnFx3",
+    "amount": 760.0064,
+    "reason": "unknown asset: no price source"
+   }
+  ]
+ },
+ "liabilities": {
+  "accounts_listed": 521,
+  "vaults_excluded": 51,
+  "subaccounts_discovered": 65,
+  "accounts_read": 555,
+  "accounts_failed": [
+   "019d5e6f-3786-7454-a4ee-f51c8a7b817e",
+   "019da071-ca8d-7e7d-8782-66eb85e0b8f5",
+   "019db4b8-be82-7560-bf67-15febceae753",
+   "01a0e4f1-4115-7a82-adf5-a5955dbaea9e",
+   "01a10a3d-a5c6-770a-baa6-0049ca7badbc",
+   "01a136a0-a5a7-73ca-ac3d-508cc0f275a3",
+   "01a136a0-2990-745c-ab72-acf543030bf1",
+   "01a1368c-6945-7407-bd20-e5b384c05cab",
+   "01a1369f-ef12-724c-9e34-4a410bb066ed",
+   "01a15ee2-7407-77b5-9187-dbe0c8900903",
+   "01a1591d-77a5-7005-addf-7834e480ca9e",
+   "01a1644c-555b-7998-9698-329e2825f7b0",
+   "01a16510-c09c-7772-b0ae-d79d439ff0dd",
+   "01a1650e-be07-783f-ad6c-b0323b329101",
+   "01a1650e-06af-79ce-ae61-56a92f38c0fc",
+   "01a1673a-aecd-7044-aeee-9518213af037",
+   "019d5d9d-6dfa-7818-88ba-7898289ecba5",
+   "01a0e4d3-936d-72ab-bd41-3a14be54b44c",
+   "01a1688c-b135-7674-a12f-3ceb6618a177",
+   "01a13778-ba7a-7ca3-bebe-14a4b350f199",
+   "01a13778-0cb1-7dd8-97c8-45f753a47751",
+   "019d5d9d-c4d2-757d-8e65-a033c6eb9758",
+   "019da06e-6d8b-7ce1-8e4a-f9045c275223",
+   "019d5ec0-d699-701c-8f4f-ed26eee67496",
+   "01a1330d-1ed3-7122-afb6-5ea474dd3cb5",
+   "01a0e65f-affa-7e8a-9e03-180ab1ffa4b2",
+   "01a133fe-83e1-7d7c-af61-412273cbb61d",
+   "01a0f208-df40-7ad0-aa2b-df175b0919e3",
+   "01a0f208-e033-7c0b-bc1a-6ee727af79ba",
+   "01a0e65f-af46-7514-8c72-f1ddb6c952ab",
+   "01a130c2-edf2-7ca6-a506-ad0460d78fbc"
+  ],
+  "negative_accounts": [
+   "019d09db-47f7-7180-9d0c-c9367bf6b823",
+   "019d534a-1fdd-713d-a3d2-1771d18837b7",
+   "019d4f55-ba7c-7818-b7e5-4f4cf74ff51a",
+   "019d09af-a88b-7245-8fdd-c685976f3dac",
+   "019d2b18-b114-7616-a4ce-e81bbd959500",
+   "019d2fd8-47b4-7260-8a21-2e0ca3198a78",
+   "019d0a46-c432-7a4e-8118-4d65f6d2c78d",
+   "01a0e578-5360-74a5-a786-020a57016bee",
+   "01a0e629-ad19-7304-b239-ce328ba93c1e",
+   "01a0e972-9a75-7f36-a07b-2c5cee2e9cca",
+   "01a0e582-c0a8-73b6-9ad9-448fef999b28",
+   "01a0e95e-4ef5-7ea7-af9e-a0b6c068f542",
+   "01a0e988-3279-7ca1-b3bd-7228f7b6f652",
+   "01a0e98d-2f08-761e-8763-53f68814ce3c",
+   "01a0e98d-3c7d-74c4-af2a-4d45c2e9c3c8",
+   "01a0d332-6495-72be-a8e2-d9a11b663b6b",
+   "01a0e988-320b-762c-8b4c-beaa8fefe7ba",
+   "01a0e98d-3053-739b-9728-4c637c5c67d0",
+   "01a0e98d-38d6-7d62-856f-2c701ab5afbd",
+   "01a0e98d-3a1a-77b1-bd96-b686156db724",
+   "01a0e98d-3d99-7520-a877-fe42f37f7195",
+   "01a0e98d-2ddc-7cd5-b94a-0b0a294cf5d1",
+   "01a0e98d-318d-72ff-8069-fb75f87f61b0",
+   "01a0e98d-3ed7-7997-85f5-2e106af35179",
+   "01a0e98d-4131-7080-8fde-a4508086a7cc",
+   "01a0eb6d-ef72-7332-a32c-5b9956e5c44c",
+   "01a0e98d-33de-7cec-b94c-b120b806304d",
+   "01a0e98d-3b3f-794d-8ff3-0e9df4c03033",
+   "01a0e98d-3503-7a9a-b710-90aa2b7c5686",
+   "01a0e98d-3761-7900-a292-6254d3bb0d5a",
+   "01a0e98d-3635-78d0-a6d9-3593ace55f5a",
+   "01a0f172-18d7-7cb6-84e7-ee9cf9df57c1",
+   "01a0f1ea-878b-7b95-9a9c-c990a3895aef",
+   "01a0f208-e40f-7503-8e39-54c6dd0736dc",
+   "01a0f208-e5f7-7617-b884-12783954e9f4",
+   "01a0f208-e968-758c-a0c1-7ea6d3d0506b",
+   "01a0eb39-3299-773f-aba0-ef7a1e778169",
+   "01a12d22-2a60-720a-901c-821f17de5bb7",
+   "01a0e99b-6ea1-758b-b79a-4acdb1ab9daa",
+   "01a12d5f-f3b9-707e-8114-0a838e226ce3",
+   "01a13030-350e-7e28-be59-fb2e885dcb19",
+   "01a0f208-e793-7a65-b124-c7244dd3207b",
+   "01a0e98d-4399-7d09-b26f-8ad486739d1b",
+   "01a12d88-6e57-7719-95d5-1039552c85bb",
+   "01a13098-5099-72f9-9f15-92ec72b356b9",
+   "01a1364b-f834-7c66-af7c-643727022fcf",
+   "01a1367d-8bc6-719b-a468-1bd41a05eabb",
+   "01a1367f-2820-798a-b419-210a7a6795d2",
+   "01a1367f-4fbb-7072-a910-2221f41bdb0e",
+   "01a1367f-828d-7554-84dc-6605071d49d0",
+   "01a136a0-e28e-73b0-b7f6-6a3810b8aab3",
+   "01a133ed-e57f-7c6b-8544-a96bafecc28c",
+   "01a136de-d438-72b4-807f-173afecbcaeb",
+   "01a136b7-6bff-7b2d-9440-43d97c46c289",
+   "01a13705-96c7-7c0e-bf87-baa4936c33b6",
+   "01a136bc-6375-7c22-a439-a2bf6a80d3d7",
+   "01a136b7-c445-7135-8f9f-ef4051062a0e",
+   "01a1367f-bbdc-7408-81da-4cc91ae38059",
+   "01a136bc-89c7-7303-8db0-7b482cc9af2b",
+   "01a13c85-5457-7b6f-8392-19ddc766856f",
+   "01a13f7e-3eff-7dfb-9000-9204f5ba5160",
+   "01a136b8-84dd-7787-bb49-c4964914a3bc",
+   "01a136a0-6658-7305-899e-5eb78dd5bf43",
+   "01a136b8-2b4a-7dc9-83e0-7ef83b949217",
+   "01a136bc-b55e-73d8-a038-a1ad872827e8",
+   "01a14080-2473-7358-8cfb-3bdb68071cf8",
+   "01a14051-f60c-79a0-8106-63d6e0c30b75",
+   "01a12fc7-5406-7a44-b36d-cde7559aa044",
+   "01a0e663-ca65-79dc-8319-9825ab832fa1"
+  ],
+  "confidence": "Partial",
+  "account_equity_usd": 38698591.51547415,
+  "margin_balance_usd": 38698580.182179,
+  "isolated_margin_usd": 11.333295151591301,
+  "locked_rewards_usd": 5098.918665227484,
+  "vault_shares_usd": 917296.1515725018,
+  "staking_rewards_usd": 0,
+  "commission_usd": null,
+  "total_usd": 39615887.66704665,
+  "vault_accounts_crosscheck_usd": 917296.1515725016,
+  "accounts": [
+   {
+    "account_id": "019d1cf8-5346-72bf-bbdd-04ac9c3fbe15",
+    "sub_account": false,
+    "wallet_balance": "2.706692329455849",
+    "unrealized_pnl": "0",
+    "margin_balance": "2.706692329455849",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d3ec1-5c90-71e5-8ed9-c6e7d9677b1c",
+    "sub_account": false,
+    "wallet_balance": "0.006923164626187",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.006923164626187",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d09db-47f7-7180-9d0c-c9367bf6b823",
+    "sub_account": false,
+    "wallet_balance": "-4.73383097213553889",
+    "unrealized_pnl": "0",
+    "margin_balance": "-4.73383097213553889",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d0a48-92f7-73bc-bc51-488ff1ba0d51",
+    "sub_account": false,
+    "wallet_balance": "0.000000000000000010",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.000000000000000010",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d0d43-4fd3-7860-a85e-f909205f982a",
+    "sub_account": false,
+    "wallet_balance": "128.2918042893083801",
+    "unrealized_pnl": "0",
+    "margin_balance": "128.2918042893083801",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d4a0b-d5f3-7b3f-af98-e40a7fedc3ce",
+    "sub_account": false,
+    "wallet_balance": "0.000000000000000077",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.000000000000000077",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d09b0-bd1e-716c-8d88-3c8b18c7416e",
+    "sub_account": false,
+    "wallet_balance": "2.67026592081849969",
+    "unrealized_pnl": "0",
+    "margin_balance": "2.67026592081849969",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d534a-1fdd-713d-a3d2-1771d18837b7",
+    "sub_account": false,
+    "wallet_balance": "-0.00000000000000001",
+    "unrealized_pnl": "0",
+    "margin_balance": "-0.00000000000000001",
+    "lockedRewards": "19.917478",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d197d-e64b-735a-b4e2-b2d02287aef7",
+    "sub_account": false,
+    "wallet_balance": "0.000000000000000127",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.000000000000000127",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d06a2-bc43-761c-94e7-2d16d994d0c7",
+    "sub_account": false,
+    "wallet_balance": "184917.4751347962671",
+    "unrealized_pnl": "-18594.09565818",
+    "margin_balance": "166323.3794766162671",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d4f55-ba7c-7818-b7e5-4f4cf74ff51a",
+    "sub_account": false,
+    "wallet_balance": "-0.00000000000000001",
+    "unrealized_pnl": "0",
+    "margin_balance": "-0.00000000000000001",
+    "lockedRewards": "19.922802",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d0a4c-ae04-7752-a54e-904d497a1e16",
+    "sub_account": false,
+    "wallet_balance": "89020.35595827792001",
+    "unrealized_pnl": "-1113.60441125",
+    "margin_balance": "87906.75154702792001",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d06d9-d337-7169-af03-2ea759f7a6aa",
+    "sub_account": false,
+    "wallet_balance": "0.000000000000001",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.000000000000001",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5876-05d1-783f-ba81-446bc661389b",
+    "sub_account": false,
+    "wallet_balance": "437.49892199",
+    "unrealized_pnl": "0",
+    "margin_balance": "437.49892199",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d09af-a88b-7245-8fdd-c685976f3dac",
+    "sub_account": false,
+    "wallet_balance": "-8.57902566772731126",
+    "unrealized_pnl": "0",
+    "margin_balance": "-8.57902566772731126",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d2b18-b114-7616-a4ce-e81bbd959500",
+    "sub_account": false,
+    "wallet_balance": "-216.8177123140198441",
+    "unrealized_pnl": "0",
+    "margin_balance": "-216.8177123140198441",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d2fd8-47b4-7260-8a21-2e0ca3198a78",
+    "sub_account": false,
+    "wallet_balance": "-0.0000000000000000107",
+    "unrealized_pnl": "0",
+    "margin_balance": "-0.0000000000000000107",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5863-ed20-7577-b2e5-320dd0f495a9",
+    "sub_account": false,
+    "wallet_balance": "466.06673742",
+    "unrealized_pnl": "0",
+    "margin_balance": "466.06673742",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d9e-73a7-7cc9-a026-c3520375f187",
+    "sub_account": false,
+    "wallet_balance": "3470.988661631150233",
+    "unrealized_pnl": "183.90",
+    "margin_balance": "3654.888661631150233",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5da3-71bc-7cc1-93b5-0b9617e73580",
+    "sub_account": false,
+    "wallet_balance": "5941.988723262300465",
+    "unrealized_pnl": "390.60",
+    "margin_balance": "6332.588723262300465",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e1f-5d15-7839-b1db-a7a0ab66cdd9",
+    "sub_account": false,
+    "wallet_balance": "17452.54093826484467",
+    "unrealized_pnl": "-835.70000000",
+    "margin_balance": "16616.84093826484467",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d0a46-c432-7a4e-8118-4d65f6d2c78d",
+    "sub_account": false,
+    "wallet_balance": "-0.0000000000000016",
+    "unrealized_pnl": "0",
+    "margin_balance": "-0.0000000000000016",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e1f-b390-7d1e-87c2-e3211b02499e",
+    "sub_account": false,
+    "wallet_balance": "3470.992786631150233",
+    "unrealized_pnl": "192.15",
+    "margin_balance": "3663.142786631150233",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5878-f5a6-728f-9b0d-28f1b79e7647",
+    "sub_account": false,
+    "wallet_balance": "438.16566007",
+    "unrealized_pnl": "0",
+    "margin_balance": "438.16566007",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d09d9-3f1e-75f5-b223-4336eabff44d",
+    "sub_account": false,
+    "wallet_balance": "11921.45293495440635",
+    "unrealized_pnl": "-1442.59727762",
+    "margin_balance": "10478.85565733440635",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d585e-6cd8-7cc5-a72b-ba7c5fb212bc",
+    "sub_account": false,
+    "wallet_balance": "2322.496256058408800",
+    "unrealized_pnl": "190.02629273",
+    "margin_balance": "2512.522548788408800",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d217b-2a4b-7cc4-8009-63a31bd52c56",
+    "sub_account": false,
+    "wallet_balance": "0.0000000000000001",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.0000000000000001",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d1935-5bba-726e-a38e-838a892245f3",
+    "sub_account": false,
+    "wallet_balance": "60303.30930884326700",
+    "unrealized_pnl": "-983.32096368",
+    "margin_balance": "59319.98834516326700",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d9e-8479-7b8a-bd67-3df26229ff3e",
+    "sub_account": false,
+    "wallet_balance": "2527.817113368849767",
+    "unrealized_pnl": "-207.75",
+    "margin_balance": "2320.067113368849767",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e87-1210-73f8-b49e-b59d243b9a7e",
+    "sub_account": false,
+    "wallet_balance": "3709.209225795391379",
+    "unrealized_pnl": "-322.94117200",
+    "margin_balance": "3386.268053795391379",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e9e-8be9-7942-a337-46ee6a49dec3",
+    "sub_account": false,
+    "wallet_balance": "17720.49655922747915",
+    "unrealized_pnl": "-825.6000",
+    "margin_balance": "16894.89655922747915",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec1-b99f-752a-a23a-6834e7ab07f7",
+    "sub_account": false,
+    "wallet_balance": "3471.109478736180233",
+    "unrealized_pnl": "186.49999995",
+    "margin_balance": "3657.609478686180233",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b32-8db2-74ec-9139-02ac434b54c9",
+    "sub_account": false,
+    "wallet_balance": "99996.394450",
+    "unrealized_pnl": "0",
+    "margin_balance": "99996.394450",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e9e-e98d-7438-b50c-4f5e48715041",
+    "sub_account": false,
+    "wallet_balance": "2527.696396263819767",
+    "unrealized_pnl": "-205.35",
+    "margin_balance": "2322.346396263819767",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ea3-cc8f-7433-9340-318fbc6ffe65",
+    "sub_account": false,
+    "wallet_balance": "5942.220257472360465",
+    "unrealized_pnl": "375.60",
+    "margin_balance": "6317.820257472360465",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e6f-481d-7991-83dd-8455117c3dac",
+    "sub_account": false,
+    "wallet_balance": "2527.697746263819767",
+    "unrealized_pnl": "-208.05",
+    "margin_balance": "2319.647746263819767",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e6e-eebd-75a8-9ba9-d9bf61c2ffea",
+    "sub_account": false,
+    "wallet_balance": "17625.97288223380455",
+    "unrealized_pnl": "-827.20000000",
+    "margin_balance": "16798.77288223380455",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec6-8655-7022-8cc9-8e7358197d57",
+    "sub_account": false,
+    "wallet_balance": "5942.217707472360465",
+    "unrealized_pnl": "370.50",
+    "margin_balance": "6312.717707472360465",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec1-63f4-7252-b3a3-f7ec6f7f32ad",
+    "sub_account": false,
+    "wallet_balance": "17675.82967798392121",
+    "unrealized_pnl": "-799.2000",
+    "margin_balance": "16876.62967798392121",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d753e-5b48-7dc1-b74f-0dba186c5f4b",
+    "sub_account": false,
+    "wallet_balance": "1441.481775863377440",
+    "unrealized_pnl": "0",
+    "margin_balance": "1441.481775863377440",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b32-a717-7621-a492-513b7bee87b5",
+    "sub_account": false,
+    "wallet_balance": "100002.40",
+    "unrealized_pnl": "0",
+    "margin_balance": "100002.40",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec1-ca2d-71c0-a9b4-a1d5d60a9d03",
+    "sub_account": false,
+    "wallet_balance": "2527.695196263819767",
+    "unrealized_pnl": "-202.95",
+    "margin_balance": "2324.745196263819767",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e9e-da8a-78d5-9013-dd61323191ca",
+    "sub_account": false,
+    "wallet_balance": "3471.109178736180233",
+    "unrealized_pnl": "185.89999995",
+    "margin_balance": "3657.009178686180233",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c3e-2320-7291-bd5f-47e00b23773d",
+    "sub_account": false,
+    "wallet_balance": "101779.9489607785514",
+    "unrealized_pnl": "-142.55714532",
+    "margin_balance": "101637.3918154585514",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d9e-2425-7daa-817c-74517d1b9887",
+    "sub_account": false,
+    "wallet_balance": "17720.49655922747915",
+    "unrealized_pnl": "-825.3000000",
+    "margin_balance": "16895.19655922747915",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b56-7327-7999-aaad-b7cdcc9b62cd",
+    "sub_account": false,
+    "wallet_balance": "99991.588450",
+    "unrealized_pnl": "0",
+    "margin_balance": "99991.588450",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b7a-179d-7288-8e25-7c6b7efcbfdc",
+    "sub_account": false,
+    "wallet_balance": "99449.03011958522776",
+    "unrealized_pnl": "40.08932066",
+    "margin_balance": "99489.11944024522776",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c52-9a4d-7701-b54a-e468f89c4240",
+    "sub_account": false,
+    "wallet_balance": "98050.06326192517587",
+    "unrealized_pnl": "134.52393767",
+    "margin_balance": "98184.58719959517587",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b73-1d1a-7ef3-8e79-e0a08c3e7a5c",
+    "sub_account": false,
+    "wallet_balance": "99991.588800",
+    "unrealized_pnl": "0",
+    "margin_balance": "99991.588800",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b56-8bcc-7284-b38b-2516790db13a",
+    "sub_account": false,
+    "wallet_balance": "100005.60",
+    "unrealized_pnl": "0",
+    "margin_balance": "100005.60",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c27-41a2-7b17-acd3-a6597ce9f72e",
+    "sub_account": false,
+    "wallet_balance": "101840.1930555385514",
+    "unrealized_pnl": "-181.01867532",
+    "margin_balance": "101659.1743802185514",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e1f-c7bc-7a09-bc81-7671d155fbc7",
+    "sub_account": false,
+    "wallet_balance": "2527.817113368849767",
+    "unrealized_pnl": "-207.75",
+    "margin_balance": "2320.067113368849767",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b85-371c-7f11-843e-55fa3e665194",
+    "sub_account": false,
+    "wallet_balance": "99984.75653650000",
+    "unrealized_pnl": "0",
+    "margin_balance": "99984.75653650000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e24-7a9e-7b49-9667-0ae85df147d1",
+    "sub_account": false,
+    "wallet_balance": "5941.984373262300465",
+    "unrealized_pnl": "381.90",
+    "margin_balance": "6323.884373262300465",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b85-5020-7ea5-917e-75bdc1011607",
+    "sub_account": false,
+    "wallet_balance": "99546.48796610490760",
+    "unrealized_pnl": "33.69744410",
+    "margin_balance": "99580.18541020490760",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e74-0cb3-737c-9f45-1be9b0b3c6e6",
+    "sub_account": false,
+    "wallet_balance": "5942.219207472360465",
+    "unrealized_pnl": "373.50",
+    "margin_balance": "6315.719207472360465",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c52-ae36-7d9d-b0da-3050519df3ff",
+    "sub_account": false,
+    "wallet_balance": "101944.0173306248241",
+    "unrealized_pnl": "-134.52393767",
+    "margin_balance": "101809.4933929548241",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b79-fdfa-739b-96f7-aa10577928a2",
+    "sub_account": false,
+    "wallet_balance": "99985.31603350000",
+    "unrealized_pnl": "0",
+    "margin_balance": "99985.31603350000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b73-35d8-7512-a26c-2d2021278a94",
+    "sub_account": false,
+    "wallet_balance": "100005.60",
+    "unrealized_pnl": "0",
+    "margin_balance": "100005.60",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c76-0536-753e-9704-94609b327cb1",
+    "sub_account": false,
+    "wallet_balance": "101940.9551206249241",
+    "unrealized_pnl": "-119.89268745",
+    "margin_balance": "101821.0624331749241",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db497-5375-76f2-8ed7-1b4afe168ed3",
+    "sub_account": false,
+    "wallet_balance": "100096.0675232102702",
+    "unrealized_pnl": "-7.19181996",
+    "margin_balance": "100088.8757032502702",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da074-08b3-7e35-8d53-0410117c4e31",
+    "sub_account": false,
+    "wallet_balance": "500364.2694076341469",
+    "unrealized_pnl": "0",
+    "margin_balance": "500364.2694076341469",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b2f-8fed-7912-9f77-99cd977667af",
+    "sub_account": false,
+    "wallet_balance": "99850.51030902976653",
+    "unrealized_pnl": "-21.35",
+    "margin_balance": "99829.16030902976653",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da088-d97f-7717-8b70-a0596cf0af3c",
+    "sub_account": false,
+    "wallet_balance": "4703113.559176609960",
+    "unrealized_pnl": "10485.373500",
+    "margin_balance": "4713598.932676609960",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da088-bf0e-7a89-a2bb-46ef57b3fc61",
+    "sub_account": false,
+    "wallet_balance": "5275514.352279418012",
+    "unrealized_pnl": "-8381.152500",
+    "margin_balance": "5267133.199779418012",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db49b-7f1c-7cc2-9c83-cb50787d5c5e",
+    "sub_account": false,
+    "wallet_balance": "100097.9512553171413",
+    "unrealized_pnl": "-7.22247368",
+    "margin_balance": "100090.7287816371413",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db49b-9992-715d-8ef5-659ad484441f",
+    "sub_account": false,
+    "wallet_balance": "99901.98658180286066",
+    "unrealized_pnl": "7.22247368",
+    "margin_balance": "99909.20905548286066",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da074-22dc-72fd-ba36-19765e0edf05",
+    "sub_account": false,
+    "wallet_balance": "498829.6195335023530",
+    "unrealized_pnl": "40.73867000",
+    "margin_balance": "498870.3582035023530",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4ac-aa7c-7ec1-9305-8e835894b952",
+    "sub_account": false,
+    "wallet_balance": "100096.0690820535732",
+    "unrealized_pnl": "-7.11915996",
+    "margin_balance": "100088.9499220935732",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db497-6d85-79db-8755-546e5e2dd1b0",
+    "sub_account": false,
+    "wallet_balance": "90262.83999123162910",
+    "unrealized_pnl": "714.46862350",
+    "margin_balance": "90977.30861473162910",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4a8-5fe2-76b1-bc19-1abd147601b2",
+    "sub_account": false,
+    "wallet_balance": "100097.9527675236463",
+    "unrealized_pnl": "-7.30279368",
+    "margin_balance": "100090.6499738436463",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c75-f113-79b6-b5b6-cc5dac860ea6",
+    "sub_account": false,
+    "wallet_balance": "98053.16093062507587",
+    "unrealized_pnl": "119.89173767",
+    "margin_balance": "98173.05266829507587",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4be-c0aa-7599-8350-39df7f1a2cd2",
+    "sub_account": false,
+    "wallet_balance": "100097.9528426636463",
+    "unrealized_pnl": "-7.15251368",
+    "margin_balance": "100090.8003289836463",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019dda7b-3130-7008-afa5-9622cb8b488f",
+    "sub_account": false,
+    "wallet_balance": "9627.279171130656550",
+    "unrealized_pnl": "0",
+    "margin_balance": "9627.279171130656550",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019dda90-1943-7cd8-9c5d-1b4a91ce182e",
+    "sub_account": false,
+    "wallet_balance": "10372.76130154500855",
+    "unrealized_pnl": "0",
+    "margin_balance": "10372.76130154500855",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da071-e6f6-78e6-a11f-09fe39b003f2",
+    "sub_account": false,
+    "wallet_balance": "499266.3184914861945",
+    "unrealized_pnl": "0",
+    "margin_balance": "499266.3184914861945",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019ddab3-7e65-7bd5-9eb7-6a871d7578b0",
+    "sub_account": false,
+    "wallet_balance": "10781.79105790242474",
+    "unrealized_pnl": "39.83609151",
+    "margin_balance": "10821.62714941242474",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019ddab2-960f-7f38-9531-dd0d761f244f",
+    "sub_account": false,
+    "wallet_balance": "10717.15010624275393",
+    "unrealized_pnl": "-4.18272223",
+    "margin_balance": "10712.96738401275393",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019dda74-f523-7dfb-b873-b77e00ff4ebe",
+    "sub_account": false,
+    "wallet_balance": "10303.44393109463666",
+    "unrealized_pnl": "-18.43712",
+    "margin_balance": "10285.00681109463666",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019dda74-eca9-7224-b894-6b725db57456",
+    "sub_account": false,
+    "wallet_balance": "9923.474565285342909",
+    "unrealized_pnl": "0",
+    "margin_balance": "9923.474565285342909",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019ddab4-8277-7216-b0d2-48519a66e810",
+    "sub_account": false,
+    "wallet_balance": "9284.351592997575286",
+    "unrealized_pnl": "-6.61649151",
+    "margin_balance": "9277.735101487575286",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019ddab3-8aae-7884-8d16-409d420a1dae",
+    "sub_account": false,
+    "wallet_balance": "9999.58441090",
+    "unrealized_pnl": "0",
+    "margin_balance": "9999.58441090",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019ddab4-8f0d-738b-9e6f-f89dff3c8f1b",
+    "sub_account": false,
+    "wallet_balance": "9988.13715622",
+    "unrealized_pnl": "0",
+    "margin_balance": "9988.13715622",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019dda7b-39a2-7f22-ae61-349084b36d6d",
+    "sub_account": false,
+    "wallet_balance": "10303.17006473083283",
+    "unrealized_pnl": "-18.42048",
+    "margin_balance": "10284.74958473083283",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4d1-ef50-7995-b506-5e8405a884a7",
+    "sub_account": false,
+    "wallet_balance": "101066.1818096628093",
+    "unrealized_pnl": "-78.54535260",
+    "margin_balance": "100987.6364570628093",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019ddab5-8a4a-7e6c-94c1-49d1077d656e",
+    "sub_account": false,
+    "wallet_balance": "10783.84800799275393",
+    "unrealized_pnl": "40.16697777",
+    "margin_balance": "10824.01498576275393",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019e2119-c453-7e21-816c-ab644de01d0b",
+    "sub_account": false,
+    "wallet_balance": "2427.785081583655521",
+    "unrealized_pnl": "0",
+    "margin_balance": "2427.785081583655521",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db51c-ea60-7234-8ac5-692185521c69",
+    "sub_account": false,
+    "wallet_balance": "100284.4487915497034",
+    "unrealized_pnl": "-21.23850479",
+    "margin_balance": "100263.2102867597034",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0c198-9844-7a7f-a51b-7d36845de881",
+    "sub_account": false,
+    "wallet_balance": "2546.353491218724100",
+    "unrealized_pnl": "-42.95781372",
+    "margin_balance": "2503.395677498724100",
+    "lockedRewards": "2499.3880081677444",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0d332-639a-7e86-86fe-7267528a26c0",
+    "sub_account": false,
+    "wallet_balance": "39.96331250",
+    "unrealized_pnl": "0",
+    "margin_balance": "39.96331250",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4d2-09b2-7281-9536-aa87c79bf2cc",
+    "sub_account": false,
+    "wallet_balance": "100868.9392171123117",
+    "unrealized_pnl": "-63.85433430",
+    "margin_balance": "100805.0848828123117",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019ecb47-faf5-73da-aad5-91cead3f09a2",
+    "sub_account": false,
+    "wallet_balance": "917.36465620",
+    "unrealized_pnl": "0",
+    "margin_balance": "917.36465620",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4c3-92de-7036-a454-a5da430e88f6",
+    "sub_account": false,
+    "wallet_balance": "100099.8364614337143",
+    "unrealized_pnl": "-7.46953782",
+    "margin_balance": "100092.3669236137143",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f18f8-51b8-7bdf-9bfb-a8bf8963a3bf",
+    "sub_account": false,
+    "wallet_balance": "2541.560215930872093",
+    "unrealized_pnl": "-16.61274198",
+    "margin_balance": "2524.947473950872093",
+    "lockedRewards": "2499.69037705974",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019e8cca-77b2-725e-bf59-f5df1b26d4c6",
+    "sub_account": false,
+    "wallet_balance": "1.5641933422787141",
+    "unrealized_pnl": "0",
+    "margin_balance": "1.5641933422787141",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019ddab2-85b9-7d52-8a60-1ebd5e69153a",
+    "sub_account": false,
+    "wallet_balance": "9282.427806957246213",
+    "unrealized_pnl": "4.18272515",
+    "margin_balance": "9286.610532107246213",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f0d26-ee76-74b5-9717-e743f376ff4b",
+    "sub_account": false,
+    "wallet_balance": "1447.512572728840437",
+    "unrealized_pnl": "0",
+    "margin_balance": "1447.512572728840437",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0637a-3612-7ef4-aa86-2aca32cb94e3",
+    "sub_account": false,
+    "wallet_balance": "14.79453787",
+    "unrealized_pnl": "0",
+    "margin_balance": "14.79453787",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a06386-de6a-7653-8f96-d1a88e124b5a",
+    "sub_account": false,
+    "wallet_balance": "0.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.00000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019ddab5-96f4-7af8-80a4-a0ebf558f4da",
+    "sub_account": false,
+    "wallet_balance": "9999.58341495",
+    "unrealized_pnl": "0",
+    "margin_balance": "9999.58341495",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4a8-7a0c-7302-8568-d60ac9bfcd87",
+    "sub_account": false,
+    "wallet_balance": "99901.98502943635576",
+    "unrealized_pnl": "7.34623450",
+    "margin_balance": "99909.33126393635576",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019eb62b-9377-71e9-8185-e2947251e493",
+    "sub_account": false,
+    "wallet_balance": "735.6336568453933552",
+    "unrealized_pnl": "2.6000",
+    "margin_balance": "738.2336568453933552",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019e2680-a5ed-7338-aef4-7c72d4515824",
+    "sub_account": false,
+    "wallet_balance": "31.47144574882116151",
+    "unrealized_pnl": "0",
+    "margin_balance": "31.47144574882116151",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e578-5360-74a5-a786-020a57016bee",
+    "sub_account": false,
+    "wallet_balance": "-4.93742448",
+    "unrealized_pnl": "0",
+    "margin_balance": "-4.93742448",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e629-ad19-7304-b239-ce328ba93c1e",
+    "sub_account": false,
+    "wallet_balance": "-24.11241618",
+    "unrealized_pnl": "0",
+    "margin_balance": "-24.11241618",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e578-55a4-7ac8-aabd-14dd22dd3c7e",
+    "sub_account": false,
+    "wallet_balance": "0.05638348444051078",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.05638348444051078",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e661-e21f-7ecb-8fed-7e768406c30c",
+    "sub_account": false,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e972-9a75-7f36-a07b-2c5cee2e9cca",
+    "sub_account": false,
+    "wallet_balance": "-23.20306698",
+    "unrealized_pnl": "0",
+    "margin_balance": "-23.20306698",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e988-32eb-7b90-a9f8-6440e9826221",
+    "sub_account": false,
+    "wallet_balance": "9.54959504",
+    "unrealized_pnl": "0",
+    "margin_balance": "9.54959504",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a08f77-45d6-766b-9d53-c728a2875c3d",
+    "sub_account": false,
+    "wallet_balance": "337.0575431500531245",
+    "unrealized_pnl": "20.00",
+    "margin_balance": "357.0575431500531245",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e582-c0a8-73b6-9ad9-448fef999b28",
+    "sub_account": false,
+    "wallet_balance": "-7.35972260",
+    "unrealized_pnl": "0",
+    "margin_balance": "-7.35972260",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e95e-4ef5-7ea7-af9e-a0b6c068f542",
+    "sub_account": false,
+    "wallet_balance": "-19.68331672",
+    "unrealized_pnl": "0",
+    "margin_balance": "-19.68331672",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-2c65-74c1-8195-2a4847b50940",
+    "sub_account": false,
+    "wallet_balance": "1.69515988",
+    "unrealized_pnl": "0",
+    "margin_balance": "1.69515988",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e988-3279-7ca1-b3bd-7228f7b6f652",
+    "sub_account": false,
+    "wallet_balance": "-19.60166087",
+    "unrealized_pnl": "0",
+    "margin_balance": "-19.60166087",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e988-3127-76d2-a9a1-f92fcfb4e8e4",
+    "sub_account": false,
+    "wallet_balance": "6.19851877",
+    "unrealized_pnl": "0",
+    "margin_balance": "6.19851877",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-2f08-761e-8763-53f68814ce3c",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-3c7d-74c4-af2a-4d45c2e9c3c8",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0d332-6495-72be-a8e2-d9a11b663b6b",
+    "sub_account": false,
+    "wallet_balance": "-25.81830000",
+    "unrealized_pnl": "0",
+    "margin_balance": "-25.81830000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e988-320b-762c-8b4c-beaa8fefe7ba",
+    "sub_account": false,
+    "wallet_balance": "-19.60166087",
+    "unrealized_pnl": "0",
+    "margin_balance": "-19.60166087",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-3053-739b-9728-4c637c5c67d0",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-38d6-7d62-856f-2c701ab5afbd",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-3a1a-77b1-bd96-b686156db724",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-3d99-7520-a877-fe42f37f7195",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e8fd-90d6-79e8-a115-efd8de81c729",
+    "sub_account": false,
+    "wallet_balance": "179.37082000",
+    "unrealized_pnl": "0",
+    "margin_balance": "179.37082000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-2ddc-7cd5-b94a-0b0a294cf5d1",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-318d-72ff-8069-fb75f87f61b0",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-32ae-7d89-b0f5-c65d715c5542",
+    "sub_account": false,
+    "wallet_balance": "1.69515988",
+    "unrealized_pnl": "0",
+    "margin_balance": "1.69515988",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-400a-7e7f-b679-000376dd032d",
+    "sub_account": false,
+    "wallet_balance": "1.69515988",
+    "unrealized_pnl": "0",
+    "margin_balance": "1.69515988",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-3ed7-7997-85f5-2e106af35179",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-4131-7080-8fde-a4508086a7cc",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e629-ac43-7655-b881-b1948911a351",
+    "sub_account": false,
+    "wallet_balance": "32.39271646",
+    "unrealized_pnl": "0",
+    "margin_balance": "32.39271646",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f087-4071-7787-8cd1-a078cf786279",
+    "sub_account": false,
+    "wallet_balance": "2.89184000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2.89184000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0eb6d-ef72-7332-a32c-5b9956e5c44c",
+    "sub_account": false,
+    "wallet_balance": "-3.07876500",
+    "unrealized_pnl": "0",
+    "margin_balance": "-3.07876500",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-33de-7cec-b94c-b120b806304d",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-3b3f-794d-8ff3-0e9df4c03033",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-3503-7a9a-b710-90aa2b7c5686",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-4272-7c65-8320-c485f744a48d",
+    "sub_account": false,
+    "wallet_balance": "1.69515988",
+    "unrealized_pnl": "0",
+    "margin_balance": "1.69515988",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-3761-7900-a292-6254d3bb0d5a",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-3635-78d0-a6d9-3593ace55f5a",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e560-c8f7-7ecc-83bf-177b79d2fdaa",
+    "sub_account": false,
+    "wallet_balance": "0.149809732614392150",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.149809732614392150",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f172-18d7-7cb6-84e7-ee9cf9df57c1",
+    "sub_account": false,
+    "wallet_balance": "-83.39462500",
+    "unrealized_pnl": "0",
+    "margin_balance": "-83.39462500",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e4cc-82a1-7c79-a9ee-770a77721be8",
+    "sub_account": false,
+    "wallet_balance": "26.88285996913089474",
+    "unrealized_pnl": "-8.439636",
+    "margin_balance": "18.44322396913089474",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f1ea-878b-7b95-9a9c-c990a3895aef",
+    "sub_account": false,
+    "wallet_balance": "-9.62850000",
+    "unrealized_pnl": "0",
+    "margin_balance": "-9.62850000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f208-e40f-7503-8e39-54c6dd0736dc",
+    "sub_account": false,
+    "wallet_balance": "-14.62850000",
+    "unrealized_pnl": "0",
+    "margin_balance": "-14.62850000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f208-e5f7-7617-b884-12783954e9f4",
+    "sub_account": false,
+    "wallet_balance": "-14.62850000",
+    "unrealized_pnl": "0",
+    "margin_balance": "-14.62850000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a102e9-3b91-7dda-abe8-6b2a53bcf54b",
+    "sub_account": false,
+    "wallet_balance": "19.86680000",
+    "unrealized_pnl": "0",
+    "margin_balance": "19.86680000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f172-17d9-7cf9-81b9-0a5d6ba7f72a",
+    "sub_account": false,
+    "wallet_balance": "1.24725000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1.24725000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f208-e968-758c-a0c1-7ea6d3d0506b",
+    "sub_account": false,
+    "wallet_balance": "-14.62850000",
+    "unrealized_pnl": "0",
+    "margin_balance": "-14.62850000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0eb39-3299-773f-aba0-ef7a1e778169",
+    "sub_account": false,
+    "wallet_balance": "-19.64362500",
+    "unrealized_pnl": "0",
+    "margin_balance": "-19.64362500",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12d22-2a60-720a-901c-821f17de5bb7",
+    "sub_account": false,
+    "wallet_balance": "-45.25378145",
+    "unrealized_pnl": "0",
+    "margin_balance": "-45.25378145",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e99b-6ea1-758b-b79a-4acdb1ab9daa",
+    "sub_account": false,
+    "wallet_balance": "-5.74881518",
+    "unrealized_pnl": "0",
+    "margin_balance": "-5.74881518",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12fb9-9d8b-714f-ab7e-2fa0d8acc1a7",
+    "sub_account": false,
+    "wallet_balance": "18.55388010",
+    "unrealized_pnl": "0",
+    "margin_balance": "18.55388010",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12d5f-f3b9-707e-8114-0a838e226ce3",
+    "sub_account": false,
+    "wallet_balance": "-45.19882490",
+    "unrealized_pnl": "0",
+    "margin_balance": "-45.19882490",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0ea53-a72c-7a5f-8cb1-ddbe199d632c",
+    "sub_account": false,
+    "wallet_balance": "371.5914690",
+    "unrealized_pnl": "0",
+    "margin_balance": "371.5914690",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0ea6f-777c-7b80-93da-2a9f072ff37f",
+    "sub_account": false,
+    "wallet_balance": "117.8289950",
+    "unrealized_pnl": "0",
+    "margin_balance": "117.8289950",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13030-350e-7e28-be59-fb2e885dcb19",
+    "sub_account": false,
+    "wallet_balance": "-21.38425520",
+    "unrealized_pnl": "0",
+    "margin_balance": "-21.38425520",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1304f-6043-7b44-9fcb-fe8ea2778cb4",
+    "sub_account": false,
+    "wallet_balance": "128.13853999996",
+    "unrealized_pnl": "0",
+    "margin_balance": "128.13853999996",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f087-400b-7b9b-a7aa-6f650159c646",
+    "sub_account": false,
+    "wallet_balance": "14.99812500",
+    "unrealized_pnl": "0",
+    "margin_balance": "14.99812500",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a102eb-0552-7205-80a9-05d670596adf",
+    "sub_account": false,
+    "wallet_balance": "19.86655000",
+    "unrealized_pnl": "0",
+    "margin_balance": "19.86655000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a132d6-7e0a-753a-bf65-dc911505b1b3",
+    "sub_account": false,
+    "wallet_balance": "0.000000000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.000000000000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f208-e793-7a65-b124-c7244dd3207b",
+    "sub_account": false,
+    "wallet_balance": "-14.62850000",
+    "unrealized_pnl": "0",
+    "margin_balance": "-14.62850000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a131d5-7641-7c36-b928-ff327b698e58",
+    "sub_account": false,
+    "wallet_balance": "0.820240",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.820240",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12d22-2985-7a66-b932-42e970d18071",
+    "sub_account": false,
+    "wallet_balance": "40.8569000",
+    "unrealized_pnl": "0",
+    "margin_balance": "40.8569000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13368-bd3b-77f5-8e88-37e83551e325",
+    "sub_account": false,
+    "wallet_balance": "0.0000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.0000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98d-4399-7d09-b26f-8ad486739d1b",
+    "sub_account": false,
+    "wallet_balance": "-2.67621072",
+    "unrealized_pnl": "0",
+    "margin_balance": "-2.67621072",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13375-e62f-7c1b-ba51-92967bd57ffc",
+    "sub_account": false,
+    "wallet_balance": "0.000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0eb51-4e55-7188-8901-a7a6a189a88f",
+    "sub_account": false,
+    "wallet_balance": "4.85062300",
+    "unrealized_pnl": "0",
+    "margin_balance": "4.85062300",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13375-e630-7eff-9ba9-348769b48372",
+    "sub_account": false,
+    "wallet_balance": "0.0000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.0000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13348-fc34-7e0f-9a40-7de114218a88",
+    "sub_account": false,
+    "wallet_balance": "2.50000000000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2.50000000000000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a135d8-8040-7de9-b9aa-d425ea4a5f2a",
+    "sub_account": false,
+    "wallet_balance": "0.16246194715689864",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.16246194715689864",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13597-7688-773c-b334-525eb256cb0b",
+    "sub_account": false,
+    "wallet_balance": "2.996729090138026382",
+    "unrealized_pnl": "0",
+    "margin_balance": "2.996729090138026382",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a10a3d-a545-7688-86b7-b2de27546287",
+    "sub_account": false,
+    "wallet_balance": "0.000000000000000010",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.000000000000000010",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13304-8a6c-7cc1-bb53-a6455e431a81",
+    "sub_account": false,
+    "wallet_balance": "363.3569222455909420",
+    "unrealized_pnl": "-94.43720580",
+    "margin_balance": "268.9197164455909420",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12d88-6e57-7719-95d5-1039552c85bb",
+    "sub_account": false,
+    "wallet_balance": "-45.26916100",
+    "unrealized_pnl": "0",
+    "margin_balance": "-45.26916100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a131ae-994c-7473-8109-ba66cbbb1188",
+    "sub_account": false,
+    "wallet_balance": "1.0281279796000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1.0281279796000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13310-9199-774b-92cb-c0f17abeeee7",
+    "sub_account": false,
+    "wallet_balance": "0.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.00000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a135e8-6200-7115-bdd7-01ba819e7694",
+    "sub_account": false,
+    "wallet_balance": "0.353223248405403426",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.353223248405403426",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13098-5099-72f9-9f15-92ec72b356b9",
+    "sub_account": false,
+    "wallet_balance": "-21.3094750",
+    "unrealized_pnl": "0",
+    "margin_balance": "-21.3094750",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a131ae-9a46-7774-b13f-982d0e226b6d",
+    "sub_account": false,
+    "wallet_balance": "0.72614032000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.72614032000000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12fb9-9e4e-7b24-bccf-6d37304b67e7",
+    "sub_account": false,
+    "wallet_balance": "3.802588",
+    "unrealized_pnl": "0",
+    "margin_balance": "3.802588",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1326b-983b-7f0e-8294-2f89c081dd90",
+    "sub_account": false,
+    "wallet_balance": "105.3479367320514219",
+    "unrealized_pnl": "0",
+    "margin_balance": "105.3479367320514219",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1364b-f834-7c66-af7c-643727022fcf",
+    "sub_account": false,
+    "wallet_balance": "-4.87595008",
+    "unrealized_pnl": "0",
+    "margin_balance": "-4.87595008",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1367d-8bc6-719b-a468-1bd41a05eabb",
+    "sub_account": false,
+    "wallet_balance": "-8.22883182",
+    "unrealized_pnl": "0",
+    "margin_balance": "-8.22883182",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1367f-2820-798a-b419-210a7a6795d2",
+    "sub_account": false,
+    "wallet_balance": "-13.33376975",
+    "unrealized_pnl": "0",
+    "margin_balance": "-13.33376975",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1367f-4fbb-7072-a910-2221f41bdb0e",
+    "sub_account": false,
+    "wallet_balance": "-16.06255940",
+    "unrealized_pnl": "0",
+    "margin_balance": "-16.06255940",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1367f-828d-7554-84dc-6605071d49d0",
+    "sub_account": false,
+    "wallet_balance": "-23.93821260",
+    "unrealized_pnl": "0",
+    "margin_balance": "-23.93821260",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136a0-e28e-73b0-b7f6-6a3810b8aab3",
+    "sub_account": false,
+    "wallet_balance": "-29.25763355",
+    "unrealized_pnl": "0",
+    "margin_balance": "-29.25763355",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136af-1df0-7e9c-b2af-c200db3bada9",
+    "sub_account": false,
+    "wallet_balance": "0.11096443108367473",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.11096443108367473",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136dc-9129-7558-8822-6eb1d683e082",
+    "sub_account": false,
+    "wallet_balance": "5.82350000",
+    "unrealized_pnl": "0",
+    "margin_balance": "5.82350000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a130c0-1571-7e58-8b63-e7696bd5a0ed",
+    "sub_account": false,
+    "wallet_balance": "5",
+    "unrealized_pnl": "0",
+    "margin_balance": "5",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13382-944b-722c-bf85-2fea4b50643c",
+    "sub_account": false,
+    "wallet_balance": "0.75165000000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.75165000000000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1364b-f76d-7e57-92ed-08ddc92729f8",
+    "sub_account": false,
+    "wallet_balance": "121.4342331852587918",
+    "unrealized_pnl": "-31.87674",
+    "margin_balance": "89.5574931852587918",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a133ed-e57f-7c6b-8544-a96bafecc28c",
+    "sub_account": false,
+    "wallet_balance": "-0.32191153",
+    "unrealized_pnl": "0",
+    "margin_balance": "-0.32191153",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1326a-f75f-71f0-b455-d10e4d27b112",
+    "sub_account": false,
+    "wallet_balance": "37.1121994634990774",
+    "unrealized_pnl": "0",
+    "margin_balance": "37.1121994634990774",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136de-d438-72b4-807f-173afecbcaeb",
+    "sub_account": false,
+    "wallet_balance": "-6.15650000",
+    "unrealized_pnl": "0",
+    "margin_balance": "-6.15650000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136b7-6bff-7b2d-9440-43d97c46c289",
+    "sub_account": false,
+    "wallet_balance": "-13.35082580",
+    "unrealized_pnl": "0",
+    "margin_balance": "-13.35082580",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13705-96c7-7c0e-bf87-baa4936c33b6",
+    "sub_account": false,
+    "wallet_balance": "-7.21636000",
+    "unrealized_pnl": "0",
+    "margin_balance": "-7.21636000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136bc-6375-7c22-a439-a2bf6a80d3d7",
+    "sub_account": false,
+    "wallet_balance": "-16.10170550",
+    "unrealized_pnl": "0",
+    "margin_balance": "-16.10170550",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13705-97b8-706d-ab55-7fc7452dfaa7",
+    "sub_account": false,
+    "wallet_balance": "18.70364000",
+    "unrealized_pnl": "0",
+    "margin_balance": "18.70364000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136b7-c445-7135-8f9f-ef4051062a0e",
+    "sub_account": false,
+    "wallet_balance": "-16.11904170",
+    "unrealized_pnl": "0",
+    "margin_balance": "-16.11904170",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1367f-bbdc-7408-81da-4cc91ae38059",
+    "sub_account": false,
+    "wallet_balance": "-29.24088380",
+    "unrealized_pnl": "0",
+    "margin_balance": "-29.24088380",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136bc-89c7-7303-8db0-7b482cc9af2b",
+    "sub_account": false,
+    "wallet_balance": "-24.01086955",
+    "unrealized_pnl": "0",
+    "margin_balance": "-24.01086955",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1370c-6d4d-72cd-9db5-1c6d4e264731",
+    "sub_account": false,
+    "wallet_balance": "18.70364000",
+    "unrealized_pnl": "0",
+    "margin_balance": "18.70364000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13a4d-31e6-7a22-b4b9-30d72e54850a",
+    "sub_account": false,
+    "wallet_balance": "4.23627776938622221",
+    "unrealized_pnl": "0",
+    "margin_balance": "4.23627776938622221",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13836-d61d-7e77-9dea-7a1f2ac97e86",
+    "sub_account": false,
+    "wallet_balance": "0.04771475000000001",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.04771475000000001",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a133d0-0002-7f0e-92b6-21008e302901",
+    "sub_account": false,
+    "wallet_balance": "92.59951350",
+    "unrealized_pnl": "0",
+    "margin_balance": "92.59951350",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13ca7-6196-7af7-8250-334e71770141",
+    "sub_account": false,
+    "wallet_balance": "0.1050000000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.1050000000000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13cc1-aceb-7f06-8bce-a6721cea7fd3",
+    "sub_account": false,
+    "wallet_balance": "0.1140000000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.1140000000000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13abe-0539-74db-839b-2ecac993e234",
+    "sub_account": false,
+    "wallet_balance": "92.1181560603385680",
+    "unrealized_pnl": "0",
+    "margin_balance": "92.1181560603385680",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13c85-5457-7b6f-8392-19ddc766856f",
+    "sub_account": false,
+    "wallet_balance": "-0.00000000000000005",
+    "unrealized_pnl": "0",
+    "margin_balance": "-0.00000000000000005",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13f7e-3eff-7dfb-9000-9204f5ba5160",
+    "sub_account": false,
+    "wallet_balance": "-0.53095300",
+    "unrealized_pnl": "0",
+    "margin_balance": "-0.53095300",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136b8-84dd-7787-bb49-c4964914a3bc",
+    "sub_account": false,
+    "wallet_balance": "-29.32408745",
+    "unrealized_pnl": "0",
+    "margin_balance": "-29.32408745",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13c91-97e2-764e-bba5-4dd55fa58764",
+    "sub_account": false,
+    "wallet_balance": "1576.354641115510005",
+    "unrealized_pnl": "0",
+    "margin_balance": "1576.354641115510005",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13eef-d061-7922-b4d7-b4c3b86092fe",
+    "sub_account": false,
+    "wallet_balance": "153.8441410",
+    "unrealized_pnl": "0",
+    "margin_balance": "153.8441410",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136a0-6658-7305-899e-5eb78dd5bf43",
+    "sub_account": false,
+    "wallet_balance": "-16.49343205",
+    "unrealized_pnl": "0",
+    "margin_balance": "-16.49343205",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13ac7-0afc-7b03-8df3-ffe194df2ede",
+    "sub_account": false,
+    "wallet_balance": "366.0049856349576165",
+    "unrealized_pnl": "0",
+    "margin_balance": "366.0049856349576165",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13a5e-3f4b-7766-a843-ccef299a4d6d",
+    "sub_account": false,
+    "wallet_balance": "168.6276197032525436",
+    "unrealized_pnl": "7.5224",
+    "margin_balance": "176.1500197032525436",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136b8-2b4a-7dc9-83e0-7ef83b949217",
+    "sub_account": false,
+    "wallet_balance": "-24.01864625",
+    "unrealized_pnl": "0",
+    "margin_balance": "-24.01864625",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136bc-b55e-73d8-a038-a1ad872827e8",
+    "sub_account": false,
+    "wallet_balance": "-29.33124850",
+    "unrealized_pnl": "0",
+    "margin_balance": "-29.33124850",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a14080-2473-7358-8cfb-3bdb68071cf8",
+    "sub_account": false,
+    "wallet_balance": "-11.55329280",
+    "unrealized_pnl": "0",
+    "margin_balance": "-11.55329280",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a14080-2376-7145-9309-f10066a6cc83",
+    "sub_account": false,
+    "wallet_balance": "23.9939585274388619",
+    "unrealized_pnl": "0",
+    "margin_balance": "23.9939585274388619",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a140a3-2b57-7b2e-a5f2-acf1a50adde1",
+    "sub_account": false,
+    "wallet_balance": "69.86749617909709687",
+    "unrealized_pnl": "-0.56953542",
+    "margin_balance": "69.29796075909709687",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a140be-3516-780b-a0d0-18833faa0b0d",
+    "sub_account": false,
+    "wallet_balance": "0.011002750000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.011002750000000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a14257-2058-7134-bc29-fa99cac81fda",
+    "sub_account": false,
+    "wallet_balance": "419.3824415252982841",
+    "unrealized_pnl": "-34.39434735",
+    "margin_balance": "384.9880941752982841",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a144dc-27e4-706c-ac46-9c2c1e77d60b",
+    "sub_account": false,
+    "wallet_balance": "128.3014085250277336",
+    "unrealized_pnl": "0",
+    "margin_balance": "128.3014085250277336",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a14263-14c5-75cc-a594-1cb7d993c27a",
+    "sub_account": false,
+    "wallet_balance": "445.51610934980",
+    "unrealized_pnl": "0",
+    "margin_balance": "445.51610934980",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a150f0-e1b4-70ff-a08f-005955eba8aa",
+    "sub_account": false,
+    "wallet_balance": "151.7034677026075997",
+    "unrealized_pnl": "4.1000",
+    "margin_balance": "155.8034677026075997",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a14051-f60c-79a0-8106-63d6e0c30b75",
+    "sub_account": false,
+    "wallet_balance": "-12.53775825",
+    "unrealized_pnl": "0",
+    "margin_balance": "-12.53775825",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1427a-0a97-7519-b2dd-ebbfe6d0679e",
+    "sub_account": false,
+    "wallet_balance": "156.0971123852425975",
+    "unrealized_pnl": "0",
+    "margin_balance": "156.0971123852425975",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a144d0-9bf9-7639-bd1e-aace38d72f78",
+    "sub_account": false,
+    "wallet_balance": "115.70219200",
+    "unrealized_pnl": "0",
+    "margin_balance": "115.70219200",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a156ba-8f44-7031-a24a-e1d3bbf2ec22",
+    "sub_account": false,
+    "wallet_balance": "0.001001",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.001001",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1370b-6070-7b0c-86fc-4dd2e5253cf5",
+    "sub_account": false,
+    "wallet_balance": "0.92",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.92",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13fbd-39eb-732d-8162-4537e30c8bae",
+    "sub_account": false,
+    "wallet_balance": "4.5298929999999994",
+    "unrealized_pnl": "0",
+    "margin_balance": "4.5298929999999994",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1370b-b453-72d2-bb2a-a7d56cd8b093",
+    "sub_account": false,
+    "wallet_balance": "67.78364000",
+    "unrealized_pnl": "0",
+    "margin_balance": "67.78364000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13fab-701a-799d-8290-3cba546e1a47",
+    "sub_account": false,
+    "wallet_balance": "1.9999999999999994",
+    "unrealized_pnl": "0",
+    "margin_balance": "1.9999999999999994",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a15f8c-e981-752f-9eaf-5846a095339c",
+    "sub_account": false,
+    "wallet_balance": "480.7812862612530074",
+    "unrealized_pnl": "29.72005968",
+    "margin_balance": "510.5013459412530074",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a15fad-625f-79d6-977e-f1337c69c6bd",
+    "sub_account": false,
+    "wallet_balance": "1139.458441490964206",
+    "unrealized_pnl": "8.30956789",
+    "margin_balance": "1147.768009380964206",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1650c-2aad-71ae-9c07-f7d578e20b62",
+    "sub_account": false,
+    "wallet_balance": "51.36290142907384733",
+    "unrealized_pnl": "2.8000",
+    "margin_balance": "54.16290142907384733",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a164a5-2d1b-7186-9cf9-660117d7b559",
+    "sub_account": false,
+    "wallet_balance": "59.20531338",
+    "unrealized_pnl": "0",
+    "margin_balance": "59.20531338",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a15fd8-f5d0-71d5-9646-3218466a20e7",
+    "sub_account": false,
+    "wallet_balance": "248.3418379185161347",
+    "unrealized_pnl": "-0.28986928",
+    "margin_balance": "248.0519686385161347",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1650d-cc6f-7e8a-a53f-9248d3bd857e",
+    "sub_account": false,
+    "wallet_balance": "45.52932096529523328",
+    "unrealized_pnl": "5.99441629",
+    "margin_balance": "51.52373725529523328",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1632a-a3db-72c2-bb98-5fc59e0ad423",
+    "sub_account": false,
+    "wallet_balance": "24.02208554846944241",
+    "unrealized_pnl": "1.2000",
+    "margin_balance": "13.88879039999999999",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a15fd8-99fd-76c5-a938-ad32f5b3f405",
+    "sub_account": false,
+    "wallet_balance": "149.4753030135852278",
+    "unrealized_pnl": "0.14488571",
+    "margin_balance": "149.6201887235852278",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a14051-f50c-7b71-80d1-362f724a4056",
+    "sub_account": false,
+    "wallet_balance": "5.05927600",
+    "unrealized_pnl": "0",
+    "margin_balance": "5.05927600",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a15f75-5e57-7162-a8eb-e7aab6edc2a8",
+    "sub_account": false,
+    "wallet_balance": "452.8830843282360788",
+    "unrealized_pnl": "0",
+    "margin_balance": "452.8830843282360788",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a159c9-f0d0-7d09-9048-ba0d42c14599",
+    "sub_account": false,
+    "wallet_balance": "2183.931629558294629",
+    "unrealized_pnl": "0",
+    "margin_balance": "2183.931629558294629",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a15f8a-95d8-7d71-8039-d882d70755d0",
+    "sub_account": false,
+    "wallet_balance": "455.1251994781860788",
+    "unrealized_pnl": "0",
+    "margin_balance": "455.1251994781860788",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a15f3c-3e2e-79f9-90b3-7c2a9f5ba097",
+    "sub_account": false,
+    "wallet_balance": "19.69719306",
+    "unrealized_pnl": "0",
+    "margin_balance": "19.69719306",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1650e-3c10-73aa-a6d0-13879de24798",
+    "sub_account": false,
+    "wallet_balance": "31.58601061271499400",
+    "unrealized_pnl": "0.25622272",
+    "margin_balance": "31.84223333271499400",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1650e-638d-78fc-83fc-294f956a4783",
+    "sub_account": false,
+    "wallet_balance": "31.60008820728500600",
+    "unrealized_pnl": "-0.27894273",
+    "margin_balance": "31.32114547728500600",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1650e-9976-7513-82c3-0e2e107549f3",
+    "sub_account": false,
+    "wallet_balance": "43.88963210004260164",
+    "unrealized_pnl": "3.87800000",
+    "margin_balance": "47.76763210004260164",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16485-b6ee-7745-ba83-88fa7d0d9b00",
+    "sub_account": false,
+    "wallet_balance": "9.092138258543181250",
+    "unrealized_pnl": "0.39105679",
+    "margin_balance": "9.483195048543181250",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1652b-867c-7ee7-a835-f4b7f7c5c201",
+    "sub_account": false,
+    "wallet_balance": "843.3687909621221132",
+    "unrealized_pnl": "-103.36873000",
+    "margin_balance": "740.0000609621221132",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a165bb-68cb-71c4-bb6d-3d7280b71213",
+    "sub_account": false,
+    "wallet_balance": "418.4217538922076129",
+    "unrealized_pnl": "0",
+    "margin_balance": "418.4217538922076129",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a165dd-5c88-7988-8e10-d872f68584bd",
+    "sub_account": false,
+    "wallet_balance": "21.14763513",
+    "unrealized_pnl": "0",
+    "margin_balance": "21.14763513",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16577-aa75-7d9e-9175-87551fb89b63",
+    "sub_account": false,
+    "wallet_balance": "809.0286906417203781",
+    "unrealized_pnl": "0",
+    "margin_balance": "809.0286906417203781",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a164b3-0369-7570-aa75-341eae50db2e",
+    "sub_account": false,
+    "wallet_balance": "94.50039729657546676",
+    "unrealized_pnl": "0",
+    "margin_balance": "94.50039729657546676",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1646e-a9d1-7a06-87e9-2634bf56f80e",
+    "sub_account": false,
+    "wallet_balance": "152.9648156924239829",
+    "unrealized_pnl": "-2.50153731",
+    "margin_balance": "150.4632783824239829",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1653f-eb07-75c3-af09-e7d9bf00d0a7",
+    "sub_account": false,
+    "wallet_balance": "104.97327018",
+    "unrealized_pnl": "0",
+    "margin_balance": "104.97327018",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1650e-ccc0-7980-8e11-a22fb6d35d52",
+    "sub_account": false,
+    "wallet_balance": "31.64860141708198400",
+    "unrealized_pnl": "-1.61641639",
+    "margin_balance": "30.03218502708198400",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a163bf-fb0a-77b0-86c0-03a62889ee01",
+    "sub_account": false,
+    "wallet_balance": "865.2913045822053094",
+    "unrealized_pnl": "0",
+    "margin_balance": "865.2913045822053094",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1676c-f6e4-7844-9308-414750e6b825",
+    "sub_account": false,
+    "wallet_balance": "523.1215137608175083",
+    "unrealized_pnl": "0.53437733",
+    "margin_balance": "523.6558910908175083",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a151c7-a405-72ea-a9f3-d667640684a0",
+    "sub_account": false,
+    "wallet_balance": "1244.487375740666000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1244.487375740666000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16658-094e-7d5d-a212-576f3bbefcd0",
+    "sub_account": false,
+    "wallet_balance": "18.69172955339346963",
+    "unrealized_pnl": "0",
+    "margin_balance": "18.69172955339346963",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a167b3-c5d3-79ac-a447-bd493ad7d33b",
+    "sub_account": false,
+    "wallet_balance": "19.64215993015",
+    "unrealized_pnl": "0",
+    "margin_balance": "19.64215993015",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a168af-2676-797d-b1b5-5e6eaef8973e",
+    "sub_account": false,
+    "wallet_balance": "435.8708960460195585",
+    "unrealized_pnl": "-0.28297320",
+    "margin_balance": "435.5879228460195585",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d5f-a9c4-706e-bc8d-e9899d2f4f1c",
+    "sub_account": false,
+    "wallet_balance": "2100",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a163af-f967-79b3-afc5-bd4fea3dea98",
+    "sub_account": false,
+    "wallet_balance": "861.5612768438526233",
+    "unrealized_pnl": "-44.01528100",
+    "margin_balance": "817.5459958438526233",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a167f7-5d93-7e9e-a00b-b259efe2f102",
+    "sub_account": false,
+    "wallet_balance": "182.8547206526695727",
+    "unrealized_pnl": "4.51052100",
+    "margin_balance": "187.3652416526695727",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1682d-d9c5-7366-ae01-a15945f05038",
+    "sub_account": false,
+    "wallet_balance": "249.4925980762734716",
+    "unrealized_pnl": "3.94092629",
+    "margin_balance": "253.4335243662734716",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d64-cc3e-73d2-8cdf-53ec0600c30b",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a167d7-e05b-7c5f-9056-eee9b2b14c0e",
+    "sub_account": false,
+    "wallet_balance": "184.7356787803003670",
+    "unrealized_pnl": "-1.2992",
+    "margin_balance": "183.4364787803003670",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1650e-b33b-77bf-9a9d-1873483312af",
+    "sub_account": false,
+    "wallet_balance": "31.63519700833797000",
+    "unrealized_pnl": "-2.22106185",
+    "margin_balance": "29.41413515833797000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a188c3-8c86-76b8-aa5b-74f899930bbe",
+    "sub_account": false,
+    "wallet_balance": "404.1673781775104818",
+    "unrealized_pnl": "-7.0928",
+    "margin_balance": "397.0745781775104818",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16574-8088-7c0f-bdf9-183cc43c7226",
+    "sub_account": false,
+    "wallet_balance": "847.9740914858309000",
+    "unrealized_pnl": "7.98688193",
+    "margin_balance": "855.9609734158309000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a181a0-27fb-786c-a46c-017a676a1e22",
+    "sub_account": false,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12d5d-ea2d-7375-8c2a-acdaef0bef0a",
+    "sub_account": false,
+    "wallet_balance": "59.97377100",
+    "unrealized_pnl": "0",
+    "margin_balance": "59.97377100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d95-4145-7185-b405-957eaa19f123",
+    "sub_account": false,
+    "wallet_balance": "3100",
+    "unrealized_pnl": "0",
+    "margin_balance": "3100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12ea6-a53b-7e50-b092-a865f4a31bd9",
+    "sub_account": false,
+    "wallet_balance": "1018.912501",
+    "unrealized_pnl": "0",
+    "margin_balance": "1018.912501",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e73-a549-71d6-9dc6-aa03bd32cbec",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16140-d952-71f8-b140-67eaf42bf51b",
+    "sub_account": false,
+    "wallet_balance": "22.125094",
+    "unrealized_pnl": "0",
+    "margin_balance": "22.125094",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019eb496-3077-785d-ba5b-b662684ea089",
+    "sub_account": false,
+    "wallet_balance": "325.373062",
+    "unrealized_pnl": "0",
+    "margin_balance": "325.373062",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b7a-74ed-74bd-a722-1282effe7b1c",
+    "sub_account": false,
+    "wallet_balance": "2000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec0-ebf8-7525-8030-1dc8e4638c34",
+    "sub_account": false,
+    "wallet_balance": "3100.568196850493015",
+    "unrealized_pnl": "0",
+    "margin_balance": "3100.568196850493015",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a10993-3111-788b-8d6c-381de6415744",
+    "sub_account": false,
+    "wallet_balance": "48.770791",
+    "unrealized_pnl": "0",
+    "margin_balance": "48.770791",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1694d-295e-7180-8260-940fc0c33742",
+    "sub_account": false,
+    "wallet_balance": "254.4820730421546134",
+    "unrealized_pnl": "0",
+    "margin_balance": "254.4820730421546134",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a168e8-6b3d-73af-925c-4c2401ddb971",
+    "sub_account": false,
+    "wallet_balance": "107.56439822",
+    "unrealized_pnl": "0",
+    "margin_balance": "107.56439822",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d96-127d-77d3-9f7c-3a9f914f926a",
+    "sub_account": false,
+    "wallet_balance": "3000",
+    "unrealized_pnl": "0",
+    "margin_balance": "3000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d53c6-1cf1-73f5-b3ec-26a2eb77585a",
+    "sub_account": false,
+    "wallet_balance": "20",
+    "unrealized_pnl": "0",
+    "margin_balance": "20",
+    "lockedRewards": "20",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a17b12-3d92-71e2-ad9d-73b5f65ae9c0",
+    "sub_account": false,
+    "wallet_balance": "160.3768178524635741",
+    "unrealized_pnl": "-0.18825767",
+    "margin_balance": "160.1885601824635741",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e6e-7778-7a0f-a26f-d886fecf8733",
+    "sub_account": false,
+    "wallet_balance": "3100.689455119906153",
+    "unrealized_pnl": "0",
+    "margin_balance": "3100.689455119906153",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a181a0-4517-7eb6-b451-54503c3b8950",
+    "sub_account": false,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4cf-9985-7063-be94-bc95e6ab4c9d",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a165c1-ff3a-7c99-8bb2-77371058af1c",
+    "sub_account": false,
+    "wallet_balance": "164.546406",
+    "unrealized_pnl": "0",
+    "margin_balance": "164.546406",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d65-2dd9-729b-b756-5ec40300c00f",
+    "sub_account": false,
+    "wallet_balance": "5000",
+    "unrealized_pnl": "0",
+    "margin_balance": "5000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e73-d2c7-7a18-aa9a-b2e414a5ee81",
+    "sub_account": false,
+    "wallet_balance": "3101.076429544545454",
+    "unrealized_pnl": "0",
+    "margin_balance": "3101.076429544545454",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e24-444b-740a-9a2f-a72cb1266d4e",
+    "sub_account": false,
+    "wallet_balance": "3100.924164100",
+    "unrealized_pnl": "0",
+    "margin_balance": "3100.924164100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16875-1c5d-758d-8355-4ed4d347ff6c",
+    "sub_account": false,
+    "wallet_balance": "430.436394",
+    "unrealized_pnl": "0",
+    "margin_balance": "430.436394",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da06b-456d-7bbb-b2cc-c5a2d80138c6",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c27-56d4-739c-bb32-1b943ba6d286",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12c80-c98f-7290-abe6-94b2ca8b308c",
+    "sub_account": false,
+    "wallet_balance": "254.408986",
+    "unrealized_pnl": "0",
+    "margin_balance": "254.408986",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d95-b79d-741c-9bfe-40f4a5e54654",
+    "sub_account": false,
+    "wallet_balance": "20000",
+    "unrealized_pnl": "0",
+    "margin_balance": "20000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c4d-d6d7-7514-9e54-bd204889213e",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a137c6-f302-7300-b01b-a5d8947ffaad",
+    "sub_account": false,
+    "wallet_balance": "232.44923926",
+    "unrealized_pnl": "0",
+    "margin_balance": "232.44923926",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a14071-85f8-7861-9ff7-6aeeadb7eac3",
+    "sub_account": false,
+    "wallet_balance": "1",
+    "unrealized_pnl": "0",
+    "margin_balance": "1",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16809-80d3-77bf-84f0-811285ba57cd",
+    "sub_account": false,
+    "wallet_balance": "25.77444838656744057",
+    "unrealized_pnl": "1.4835",
+    "margin_balance": "27.25794838656744057",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b73-9210-7010-b6ae-62167c53235b",
+    "sub_account": false,
+    "wallet_balance": "2000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0ee64-4a89-70ca-8c54-5cec31a2939c",
+    "sub_account": false,
+    "wallet_balance": "16.99737500",
+    "unrealized_pnl": "0",
+    "margin_balance": "16.99737500",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da060-d5e1-7d8d-b9d5-08fc066246a7",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ea3-911c-7bbb-a7c8-ff450aeb6c6c",
+    "sub_account": false,
+    "wallet_balance": "3100.978417801818183",
+    "unrealized_pnl": "0",
+    "margin_balance": "3100.978417801818183",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12a45-801a-7345-b419-12e6ff4c42d0",
+    "sub_account": false,
+    "wallet_balance": "5000",
+    "unrealized_pnl": "0",
+    "margin_balance": "5000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec6-4930-7c08-b1cf-253a781bf2a2",
+    "sub_account": false,
+    "wallet_balance": "3100.999470830909091",
+    "unrealized_pnl": "0",
+    "margin_balance": "3100.999470830909091",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db497-8761-7445-9aa2-83b16b399f02",
+    "sub_account": false,
+    "wallet_balance": "1000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a15fd8-f74b-7b44-b4a4-a77ba07c82f6",
+    "sub_account": false,
+    "wallet_balance": "192.491270",
+    "unrealized_pnl": "0",
+    "margin_balance": "192.491270",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e23-4ed5-7329-be6b-43dc60539380",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d96-01dc-7437-830e-9e4b32b7451c",
+    "sub_account": false,
+    "wallet_balance": "3000",
+    "unrealized_pnl": "0",
+    "margin_balance": "3000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db49b-b2e4-76fc-981c-3dd6869956c8",
+    "sub_account": false,
+    "wallet_balance": "1000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0d1d5-658e-7dfa-bd1f-bc7888164b6c",
+    "sub_account": false,
+    "wallet_balance": "23.893303",
+    "unrealized_pnl": "0",
+    "margin_balance": "23.893303",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d9946-ad74-75d1-ae4a-6fa910714c4e",
+    "sub_account": false,
+    "wallet_balance": "44.801238",
+    "unrealized_pnl": "0",
+    "margin_balance": "44.801238",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d60-490c-77ff-a5e0-53c9a05ec503",
+    "sub_account": false,
+    "wallet_balance": "3000",
+    "unrealized_pnl": "0",
+    "margin_balance": "3000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4c3-c9a2-7568-86b5-e6df37952eb3",
+    "sub_account": false,
+    "wallet_balance": "1000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a04070-65a4-7b47-8015-a39b1326a3e6",
+    "sub_account": false,
+    "wallet_balance": "1225.817537",
+    "unrealized_pnl": "0",
+    "margin_balance": "1225.817537",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec0-fde3-702e-9b5a-567be2d3a23c",
+    "sub_account": false,
+    "wallet_balance": "2100.346112934593778",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100.346112934593778",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da06e-87f9-7146-a692-6f4aefd7eb42",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5da3-0bb6-7c23-ab44-3920cef2a902",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e1e-e7fb-7a89-8fab-cb714adb0040",
+    "sub_account": false,
+    "wallet_balance": "3100.157968545478260",
+    "unrealized_pnl": "0",
+    "margin_balance": "3100.157968545478260",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d60-08ac-779e-b930-ec556eb754cc",
+    "sub_account": false,
+    "wallet_balance": "20000",
+    "unrealized_pnl": "0",
+    "margin_balance": "20000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0eb6c-03b6-7868-be1f-e162d3e67df8",
+    "sub_account": false,
+    "wallet_balance": "2",
+    "unrealized_pnl": "0",
+    "margin_balance": "2",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13116-60bf-749c-8f88-3a198994f0f8",
+    "sub_account": false,
+    "wallet_balance": "478.7089564737500",
+    "unrealized_pnl": "0",
+    "margin_balance": "478.7089564737500",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e24-1a0d-766c-bb69-a64f0745ff0e",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4be-f62d-7b9b-b451-3feb838c2a96",
+    "sub_account": false,
+    "wallet_balance": "1000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4d9-47ad-71e2-a086-b9eca026bf29",
+    "sub_account": false,
+    "wallet_balance": "5",
+    "unrealized_pnl": "0",
+    "margin_balance": "5",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a15f21-3ad4-7ead-86b2-dd5c0bc287f9",
+    "sub_account": false,
+    "wallet_balance": "9.322710",
+    "unrealized_pnl": "0",
+    "margin_balance": "9.322710",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4be-dafd-72f0-9b06-33ab75d30e27",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4cf-cf18-795f-b3c9-a1fe3675ca53",
+    "sub_account": false,
+    "wallet_balance": "1000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e5a0-6fdf-7903-ba82-cbb2850115cd",
+    "sub_account": false,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e6e-87fa-7c2d-a1c1-34f28b204a9a",
+    "sub_account": false,
+    "wallet_balance": "2100.455659303019243",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100.455659303019243",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da2b7-67f5-7ecd-aafe-c7e0a62d6d19",
+    "sub_account": false,
+    "wallet_balance": "4494.212881",
+    "unrealized_pnl": "0",
+    "margin_balance": "4494.212881",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a07be7-c54f-77eb-8448-f0016f073032",
+    "sub_account": false,
+    "wallet_balance": "217.147565",
+    "unrealized_pnl": "0",
+    "margin_balance": "217.147565",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12eaa-61e9-7d9b-81c8-72474b896ce1",
+    "sub_account": false,
+    "wallet_balance": "735.867462",
+    "unrealized_pnl": "0",
+    "margin_balance": "735.867462",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a10993-3031-7019-ae01-31766f0161f0",
+    "sub_account": false,
+    "wallet_balance": "48.770791",
+    "unrealized_pnl": "0",
+    "margin_balance": "48.770791",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e6e-2ac4-7b24-a660-5950c4ac02e1",
+    "sub_account": false,
+    "wallet_balance": "5901.376134138993215",
+    "unrealized_pnl": "0",
+    "margin_balance": "5901.376134138993215",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12daa-1d68-7cc5-ad83-bc23d28957d3",
+    "sub_account": false,
+    "wallet_balance": "5",
+    "unrealized_pnl": "0",
+    "margin_balance": "5",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d9d-b421-7d73-92a4-0cae8ff3117c",
+    "sub_account": false,
+    "wallet_balance": "3101.060649695042867",
+    "unrealized_pnl": "0",
+    "margin_balance": "3101.060649695042867",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a14014-6a94-771f-b732-da75533e2a80",
+    "sub_account": false,
+    "wallet_balance": "94.22771500",
+    "unrealized_pnl": "0",
+    "margin_balance": "94.22771500",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b2c-2780-7a80-acb5-abafab8e1773",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a15e53-3e17-7630-9b05-e862a3403b7f",
+    "sub_account": false,
+    "wallet_balance": "1691.276166",
+    "unrealized_pnl": "0",
+    "margin_balance": "1691.276166",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a139ef-d832-7e91-8b56-4e24199fbaa3",
+    "sub_account": false,
+    "wallet_balance": "20",
+    "unrealized_pnl": "0",
+    "margin_balance": "20",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e72-d68d-703e-a554-86c75454a699",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ea2-b321-73c7-b7fe-30f464c747f5",
+    "sub_account": false,
+    "wallet_balance": "5097.958865171428572",
+    "unrealized_pnl": "0",
+    "margin_balance": "5097.958865171428572",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d638a-c45b-796c-b427-1cbb3e2a0af8",
+    "sub_account": false,
+    "wallet_balance": "25.154106",
+    "unrealized_pnl": "0",
+    "margin_balance": "25.154106",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da060-bb2e-7b83-a073-5154c8c94b26",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c47-1c5a-7733-9fb3-d7bae27abc0e",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e1e-f8c0-7b0c-81bb-ba2d913504fe",
+    "sub_account": false,
+    "wallet_balance": "2100.105124215588613",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100.105124215588613",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c3e-379d-75ef-a910-4496fbbe931f",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d87f8-f387-73d2-be8c-ce0291675df5",
+    "sub_account": false,
+    "wallet_balance": "499.93125000",
+    "unrealized_pnl": "0",
+    "margin_balance": "499.93125000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a146cb-0c9b-702e-8ae1-73b6ea1c7c5d",
+    "sub_account": false,
+    "wallet_balance": "11.28552200",
+    "unrealized_pnl": "0",
+    "margin_balance": "11.28552200",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b27-7efd-734d-a8e8-aec87109e6aa",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec0-aca3-764a-b604-c35bf7cafcd4",
+    "sub_account": false,
+    "wallet_balance": "5901.048221551546223",
+    "unrealized_pnl": "0",
+    "margin_balance": "5901.048221551546223",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d4848-0b77-7f26-bb0a-4c90b1dc3f02",
+    "sub_account": false,
+    "wallet_balance": "81.99700000",
+    "unrealized_pnl": "0",
+    "margin_balance": "81.99700000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ea2-8981-7ddf-b96f-05af1aa6f9ac",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5321-e9f4-73e0-a7b2-0912ee1a0099",
+    "sub_account": false,
+    "wallet_balance": "20",
+    "unrealized_pnl": "0",
+    "margin_balance": "20",
+    "lockedRewards": "20",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da067-b8b0-7ea2-a797-45c98d9ec5d4",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019e84d1-af84-76af-855d-222b703ad19a",
+    "sub_account": false,
+    "wallet_balance": "866.957624",
+    "unrealized_pnl": "0",
+    "margin_balance": "866.957624",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d95-54dc-7575-aa2b-6773bafd407d",
+    "sub_account": false,
+    "wallet_balance": "2100",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0d1c9-4596-7710-b663-5ff4dcce5369",
+    "sub_account": false,
+    "wallet_balance": "59.98750000",
+    "unrealized_pnl": "0",
+    "margin_balance": "59.98750000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a10abc-3317-76ec-82c8-a7ad9a41487a",
+    "sub_account": false,
+    "wallet_balance": "9.99987500",
+    "unrealized_pnl": "0",
+    "margin_balance": "9.99987500",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1377b-c78f-757e-bd66-0c26ab2acc13",
+    "sub_account": false,
+    "wallet_balance": "16.256747",
+    "unrealized_pnl": "0",
+    "margin_balance": "16.256747",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a14536-d4de-719b-9b1f-e63d7ea78cc6",
+    "sub_account": false,
+    "wallet_balance": "1",
+    "unrealized_pnl": "0",
+    "margin_balance": "1",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e996-2eb4-70a2-af37-70b843b964a7",
+    "sub_account": false,
+    "wallet_balance": "0.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.00000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a130f9-f0bd-7b75-a9eb-f72692d9e14a",
+    "sub_account": false,
+    "wallet_balance": "1.99687500",
+    "unrealized_pnl": "0",
+    "margin_balance": "1.99687500",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da067-9be7-7e8b-a226-2423ce7bbbb3",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e74-acfc-7351-9fb9-388cc5a54115",
+    "sub_account": false,
+    "wallet_balance": "2100",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4cf-b57d-7a11-b8b8-8d25a93d4d9f",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f098-af92-7c55-a73f-d9cf0c032179",
+    "sub_account": false,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d95-0109-7e84-8dfb-bf4d79b6cdbb",
+    "sub_account": false,
+    "wallet_balance": "5900.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "5900.00000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d60-5855-70eb-bbc8-f8ca11fc77ee",
+    "sub_account": false,
+    "wallet_balance": "3000",
+    "unrealized_pnl": "0",
+    "margin_balance": "3000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5da4-0e77-75d5-9271-c78485a50b3e",
+    "sub_account": false,
+    "wallet_balance": "2100",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b27-64f2-7b39-be60-1684897d17ec",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f128d-3ada-77a1-8bae-6200c1eb8090",
+    "sub_account": false,
+    "wallet_balance": "144.007568",
+    "unrealized_pnl": "0",
+    "margin_balance": "144.007568",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b6f-293c-7968-9f2a-e3099a734ecd",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec5-5a1a-7dab-b4ed-2d776625bcbc",
+    "sub_account": false,
+    "wallet_balance": "5098.121087857142857",
+    "unrealized_pnl": "0",
+    "margin_balance": "5098.121087857142857",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d4e00-9887-7dce-bd58-1ccf7836ec9f",
+    "sub_account": false,
+    "wallet_balance": "36.67523400",
+    "unrealized_pnl": "0",
+    "margin_balance": "36.67523400",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5da2-418f-79a0-b6d8-f6383316e7c5",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e9e-0ac6-717b-b181-0f68b486201d",
+    "sub_account": false,
+    "wallet_balance": "3100",
+    "unrealized_pnl": "0",
+    "margin_balance": "3100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec6-2134-7d1d-91c1-f37384a9e18d",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a135e8-62de-76e4-a664-941a8252a955",
+    "sub_account": false,
+    "wallet_balance": "19.99725000",
+    "unrealized_pnl": "0",
+    "margin_balance": "19.99725000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e25-2370-7a55-bb63-8cf3d1ced9f7",
+    "sub_account": false,
+    "wallet_balance": "2100",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16801-4a89-7b9e-b37b-5b1e2d88eacb",
+    "sub_account": false,
+    "wallet_balance": "21.410392",
+    "unrealized_pnl": "0",
+    "margin_balance": "21.410392",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5186-47c7-70f7-8d36-e546df07d9ac",
+    "sub_account": false,
+    "wallet_balance": "45.00800000",
+    "unrealized_pnl": "0",
+    "margin_balance": "45.00800000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1373c-0a1d-71fc-bd89-917d498c8ad8",
+    "sub_account": false,
+    "wallet_balance": "2363.545424",
+    "unrealized_pnl": "0",
+    "margin_balance": "2363.545424",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d532a-e00d-736f-adc7-a9e19730e82a",
+    "sub_account": false,
+    "wallet_balance": "20",
+    "unrealized_pnl": "0",
+    "margin_balance": "20",
+    "lockedRewards": "20",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019dda90-2c83-7140-9a49-bfc71e0c4f9d",
+    "sub_account": false,
+    "wallet_balance": "10000",
+    "unrealized_pnl": "0",
+    "margin_balance": "10000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da078-752b-76dc-b8c5-827a69c701d1",
+    "sub_account": false,
+    "wallet_balance": "5000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "5000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13778-b6e3-7e05-98ae-7e96f5ae6345",
+    "sub_account": false,
+    "wallet_balance": "236.203450",
+    "unrealized_pnl": "0",
+    "margin_balance": "236.203450",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1620e-396d-7c8e-bc6c-a6aa555519db",
+    "sub_account": false,
+    "wallet_balance": "14.99662500",
+    "unrealized_pnl": "0",
+    "margin_balance": "14.99662500",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b2f-a8c7-798b-9474-88117bc362e4",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b66-b71a-718a-971d-f069e67d38fc",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec7-ce46-71a8-8dc3-13ac41aa1154",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ea4-4212-7094-97fb-11064da80282",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec7-fa97-793d-8e92-d178f4fbb4fc",
+    "sub_account": false,
+    "wallet_balance": "2100",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d90e2-0227-7b64-b478-2f4faa2fc972",
+    "sub_account": false,
+    "wallet_balance": "308.203756",
+    "unrealized_pnl": "0",
+    "margin_balance": "308.203756",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da079-bd40-7db1-a52b-ed31b78dcd06",
+    "sub_account": false,
+    "wallet_balance": "5000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "5000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f20e-a358-779a-9262-07473f807d01",
+    "sub_account": false,
+    "wallet_balance": "10",
+    "unrealized_pnl": "0",
+    "margin_balance": "10",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e74-8670-71f1-ac85-454313adaf17",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e5a0-7050-7449-8eed-625de2d9607a",
+    "sub_account": false,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019dcc6a-2c78-777c-a4c7-c90a9353c808",
+    "sub_account": false,
+    "wallet_balance": "417.121099",
+    "unrealized_pnl": "0",
+    "margin_balance": "417.121099",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e9d-c3a7-7cc6-8e59-ee042d4ec23c",
+    "sub_account": false,
+    "wallet_balance": "5900.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "5900.00000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da05d-d422-7df9-9668-029163af8753",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a130de-fc93-76a9-9fd6-9ac4d786f5e1",
+    "sub_account": false,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16867-2997-7257-a434-ed009f779b41",
+    "sub_account": false,
+    "wallet_balance": "2153.976381",
+    "unrealized_pnl": "0",
+    "margin_balance": "2153.976381",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1376e-b6e7-7112-8ef2-02cd14d7b1c6",
+    "sub_account": false,
+    "wallet_balance": "2366.058869",
+    "unrealized_pnl": "0",
+    "margin_balance": "2366.058869",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136bd-0869-71bb-ba2d-da6dd098165f",
+    "sub_account": false,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1377b-cb63-7b40-ad59-aeb20f2f1692",
+    "sub_account": false,
+    "wallet_balance": "46.256747",
+    "unrealized_pnl": "0",
+    "margin_balance": "46.256747",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f08f-b562-79d2-998e-4acd91f6b2b3",
+    "sub_account": false,
+    "wallet_balance": "2",
+    "unrealized_pnl": "0",
+    "margin_balance": "2",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d64-0462-73b2-9b51-bf040a9d64ec",
+    "sub_account": false,
+    "wallet_balance": "5100",
+    "unrealized_pnl": "0",
+    "margin_balance": "5100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b6f-1012-7506-9ba5-77dedbb61825",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ea3-67cf-78e8-ac9c-abafe76d74de",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a139b2-78c4-7ec4-a27c-13a15e4598ad",
+    "sub_account": false,
+    "wallet_balance": "464.765594",
+    "unrealized_pnl": "0",
+    "margin_balance": "464.765594",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5da3-3748-7ece-ba7d-98695a97cc06",
+    "sub_account": false,
+    "wallet_balance": "3101.217722827272728",
+    "unrealized_pnl": "0",
+    "margin_balance": "3101.217722827272728",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019eab87-c487-7061-aecc-6c7ae7cef8ba",
+    "sub_account": false,
+    "wallet_balance": "1099.136224",
+    "unrealized_pnl": "0",
+    "margin_balance": "1099.136224",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d95-30a8-7afe-bd33-e0e242fbbc37",
+    "sub_account": false,
+    "wallet_balance": "2600.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2600.00000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c47-335c-781b-aec4-d975fbfcfc57",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ec5-2e8b-7aae-b237-581ffc109a7e",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13482-f82c-7303-83e1-64e07e805742",
+    "sub_account": false,
+    "wallet_balance": "20",
+    "unrealized_pnl": "0",
+    "margin_balance": "20",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e1e-d323-7081-b57d-cb55f94e5e08",
+    "sub_account": false,
+    "wallet_balance": "2600.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2600.00000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da06b-6288-72ba-8d36-bcc0f9d89551",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da05d-b276-7343-9e26-c95a682b6025",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a146e1-b7d3-7480-b3c3-32e587fc6fc0",
+    "sub_account": false,
+    "wallet_balance": "225.96541000",
+    "unrealized_pnl": "0",
+    "margin_balance": "225.96541000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d41-3a02-7571-95e5-e09cb3a840a5",
+    "sub_account": false,
+    "wallet_balance": "50000",
+    "unrealized_pnl": "0",
+    "margin_balance": "50000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d5f-9630-7017-9327-0bc9bc51883c",
+    "sub_account": false,
+    "wallet_balance": "3100",
+    "unrealized_pnl": "0",
+    "margin_balance": "3100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b66-d0b3-7dec-b3af-7a9db72c5e94",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e9d-f702-787d-bb1c-80c63bd23d83",
+    "sub_account": false,
+    "wallet_balance": "2600.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2600.00000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a10d57-9754-74cc-99a5-a8fbe2c8725b",
+    "sub_account": false,
+    "wallet_balance": "347.819581",
+    "unrealized_pnl": "0",
+    "margin_balance": "347.819581",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a168a7-5bca-797e-a3c9-eb957962827c",
+    "sub_account": false,
+    "wallet_balance": "431.884910",
+    "unrealized_pnl": "0",
+    "margin_balance": "431.884910",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e98a-7ef9-7ed4-adaa-88068729830f",
+    "sub_account": false,
+    "wallet_balance": "1",
+    "unrealized_pnl": "0",
+    "margin_balance": "1",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4b8-d861-7a89-b8d0-481069383228",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a165f3-c52a-72fe-a07a-bb38f8936475",
+    "sub_account": false,
+    "wallet_balance": "172.385923",
+    "unrealized_pnl": "0",
+    "margin_balance": "172.385923",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b6f-853d-76e5-855d-4f00bd8159ec",
+    "sub_account": false,
+    "wallet_balance": "2000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d65-93ba-73ab-a56f-1847665ddfe6",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e9e-2094-7ecd-8d11-6a69bc750a2a",
+    "sub_account": false,
+    "wallet_balance": "2100",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d10d8-53ab-7227-b871-dc34ee7bc035",
+    "sub_account": false,
+    "wallet_balance": "12.979724",
+    "unrealized_pnl": "0",
+    "margin_balance": "12.979724",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d64-f4a9-7c79-9b30-c3034b4b1a6a",
+    "sub_account": false,
+    "wallet_balance": "3100",
+    "unrealized_pnl": "0",
+    "margin_balance": "3100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4a8-94ef-736d-a222-620ef14c0a5a",
+    "sub_account": false,
+    "wallet_balance": "1000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1382b-cd4b-7890-a7f2-115a22f975f1",
+    "sub_account": false,
+    "wallet_balance": "2",
+    "unrealized_pnl": "0",
+    "margin_balance": "2",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d5f-4fd9-7287-af09-6c94ba04c3ff",
+    "sub_account": false,
+    "wallet_balance": "5900.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "5900.00000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b67-2c5e-7b67-bdd6-6d415f079912",
+    "sub_account": false,
+    "wallet_balance": "2000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0ee64-bc67-78e8-85ba-1e6b14d57388",
+    "sub_account": false,
+    "wallet_balance": "1",
+    "unrealized_pnl": "0",
+    "margin_balance": "1",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da063-623f-77c0-a714-1e20804e888a",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da078-59f4-77f3-af34-804e8591e7d7",
+    "sub_account": false,
+    "wallet_balance": "5000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "5000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a167c5-675a-7b29-96ff-83a0cacd8df3",
+    "sub_account": false,
+    "wallet_balance": "215.766358",
+    "unrealized_pnl": "0",
+    "margin_balance": "215.766358",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e73-01dc-7ec7-863a-17609caff057",
+    "sub_account": false,
+    "wallet_balance": "5098.260212828571428",
+    "unrealized_pnl": "0",
+    "margin_balance": "5098.260212828571428",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5ea4-69ca-7871-8097-0fffa348c5d6",
+    "sub_account": false,
+    "wallet_balance": "2100",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e24-f2b4-7b65-b9cb-32531d86cf2d",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16829-14f0-7a25-b408-a16d217f4c10",
+    "sub_account": false,
+    "wallet_balance": "21.343071",
+    "unrealized_pnl": "0",
+    "margin_balance": "21.343071",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16889-96b2-7af6-9638-ec70c7a301cf",
+    "sub_account": false,
+    "wallet_balance": "431.971806",
+    "unrealized_pnl": "0",
+    "margin_balance": "431.971806",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1655d-908f-7154-bcea-cbfc2c1037f0",
+    "sub_account": false,
+    "wallet_balance": "107.419220",
+    "unrealized_pnl": "0",
+    "margin_balance": "107.419220",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5da2-6c9c-75ac-a0ff-1f809349186b",
+    "sub_account": false,
+    "wallet_balance": "5096.226423514285714",
+    "unrealized_pnl": "0",
+    "margin_balance": "5096.226423514285714",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1312a-6883-70d0-99d3-4fd6480cbb4d",
+    "sub_account": false,
+    "wallet_balance": "13.99800000000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "13.99800000000000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e9db-116b-7641-af79-b35e80a20486",
+    "sub_account": false,
+    "wallet_balance": "19.73983300",
+    "unrealized_pnl": "0",
+    "margin_balance": "19.73983300",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13290-45ab-7414-8018-bf9990a51d09",
+    "sub_account": false,
+    "wallet_balance": "30.07637500",
+    "unrealized_pnl": "0",
+    "margin_balance": "30.07637500",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da079-d734-7de6-893f-c63ddd4cda26",
+    "sub_account": false,
+    "wallet_balance": "5000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "5000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5dcb-fc8e-7f1d-8876-4c4ff009da67",
+    "sub_account": false,
+    "wallet_balance": "29.970917",
+    "unrealized_pnl": "0",
+    "margin_balance": "29.970917",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5da3-e32b-7555-ab69-14fd1b4b4a46",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0ec47-76b1-74d3-a2eb-7039394dd36c",
+    "sub_account": false,
+    "wallet_balance": "4.99856250",
+    "unrealized_pnl": "0",
+    "margin_balance": "4.99856250",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8c4d-c306-7ef4-a1b9-fc75b32ddef4",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d63-e097-7676-ab00-434274475e67",
+    "sub_account": false,
+    "wallet_balance": "900",
+    "unrealized_pnl": "0",
+    "margin_balance": "900",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d10a3-2716-7c59-a371-1c3866a750f2",
+    "sub_account": false,
+    "wallet_balance": "12.986316",
+    "unrealized_pnl": "0",
+    "margin_balance": "12.986316",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16947-de95-7e43-af74-4e54b3644491",
+    "sub_account": false,
+    "wallet_balance": "21.369517",
+    "unrealized_pnl": "0",
+    "margin_balance": "21.369517",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b85-acc9-70ec-a220-54573362a6ff",
+    "sub_account": false,
+    "wallet_balance": "2000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d9d-9e0c-7afa-ad3a-855d99156092",
+    "sub_account": false,
+    "wallet_balance": "2600.705954264374999",
+    "unrealized_pnl": "0",
+    "margin_balance": "2600.705954264374999",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13464-f6ba-735b-8e82-dda12b1bf93f",
+    "sub_account": false,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a06384-8529-756a-abea-7f720505c1dd",
+    "sub_account": false,
+    "wallet_balance": "0.0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4d2-23c0-721c-94d7-d5d6eeba6a01",
+    "sub_account": false,
+    "wallet_balance": "1000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d56b8-629e-78ed-b6d4-a5de934fcdd7",
+    "sub_account": false,
+    "wallet_balance": "122.553172",
+    "unrealized_pnl": "0",
+    "margin_balance": "122.553172",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d5f-854c-73ac-999c-360711dffa04",
+    "sub_account": false,
+    "wallet_balance": "2600.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2600.00000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db51d-04d6-785d-8027-16b25a6db932",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13c00-d8cf-7efa-99a2-9c5b3fe2614d",
+    "sub_account": false,
+    "wallet_balance": "22.85510400",
+    "unrealized_pnl": "0",
+    "margin_balance": "22.85510400",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e1e-a2a3-73f4-95e1-06465e1e8310",
+    "sub_account": false,
+    "wallet_balance": "5900.294445619562685",
+    "unrealized_pnl": "0",
+    "margin_balance": "5900.294445619562685",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019fc836-152a-7285-b688-8c297b0a9b5c",
+    "sub_account": false,
+    "wallet_balance": "981.726675",
+    "unrealized_pnl": "0",
+    "margin_balance": "981.726675",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4ac-e037-73bf-85b5-e2a4b82ac46e",
+    "sub_account": false,
+    "wallet_balance": "1000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a137da-5b88-77e1-824d-4c9a92407220",
+    "sub_account": false,
+    "wallet_balance": "4",
+    "unrealized_pnl": "0",
+    "margin_balance": "4",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12f7d-46be-73f3-90a2-85a73a677cb1",
+    "sub_account": false,
+    "wallet_balance": "2",
+    "unrealized_pnl": "0",
+    "margin_balance": "2",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4ac-c534-7980-9a8a-02d8b4c024cd",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a137ab-03eb-703d-adc2-58bec5013507",
+    "sub_account": false,
+    "wallet_balance": "476",
+    "unrealized_pnl": "0",
+    "margin_balance": "476",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d4c-534a-76b2-a32f-f09712a6dc07",
+    "sub_account": false,
+    "wallet_balance": "50000",
+    "unrealized_pnl": "0",
+    "margin_balance": "50000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f6b29-2003-70dc-8d04-28a0cc204381",
+    "sub_account": true,
+    "wallet_balance": "316.0997515357214234",
+    "unrealized_pnl": "7.39209452",
+    "margin_balance": "323.4918460557214234",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1342d-f6a7-7375-a7a0-cc98d6f93773",
+    "sub_account": false,
+    "wallet_balance": "5.99838750",
+    "unrealized_pnl": "0",
+    "margin_balance": "5.99838750",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4c3-afe7-71e1-b89e-090847277a3e",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f6b2f-d55c-7371-8e79-8947198cad37",
+    "sub_account": true,
+    "wallet_balance": "4.615631719393226460",
+    "unrealized_pnl": "0",
+    "margin_balance": "4.615631719393226460",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5d65-b5c7-773b-bba0-2b8992e6a506",
+    "sub_account": false,
+    "wallet_balance": "2100",
+    "unrealized_pnl": "0",
+    "margin_balance": "2100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d4dcf-2eb7-7b6f-aa8c-d30dc62aacee",
+    "sub_account": false,
+    "wallet_balance": "10.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "10.00000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f5069-5be5-7596-bc50-6630e20d61a0",
+    "sub_account": true,
+    "wallet_balance": "480.6911218614072150",
+    "unrealized_pnl": "-144.58957052",
+    "margin_balance": "336.1015513414072150",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0509b-7c03-715d-8dfe-5a972c0723ed",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a050a1-6de0-78a6-9d7c-6cd025a6cca6",
+    "sub_account": true,
+    "wallet_balance": "5",
+    "unrealized_pnl": "0",
+    "margin_balance": "5",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e666-db51-7118-9a2c-518b439db4a0",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f2357-ce1c-70cf-8f28-2ac8e76aefbd",
+    "sub_account": true,
+    "wallet_balance": "995",
+    "unrealized_pnl": "0",
+    "margin_balance": "995",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f2358-b729-7a59-8471-61a05c2c1813",
+    "sub_account": true,
+    "wallet_balance": "299",
+    "unrealized_pnl": "0",
+    "margin_balance": "299",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e23-762b-7220-9629-897b1b2ce143",
+    "sub_account": false,
+    "wallet_balance": "5097.829773342857143",
+    "unrealized_pnl": "0",
+    "margin_balance": "5097.829773342857143",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f18fb-0574-7d7b-bdbf-4c9b6c9a6229",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e665-f5d8-73e4-8c9f-9f550d207d7e",
+    "sub_account": true,
+    "wallet_balance": "8",
+    "unrealized_pnl": "0",
+    "margin_balance": "8",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f2225-0451-73fa-8b9d-aafc3e3aba11",
+    "sub_account": true,
+    "wallet_balance": "100",
+    "unrealized_pnl": "0",
+    "margin_balance": "100",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f2ed2-18cf-754f-a35b-5c3d3391dbba",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d8b2c-0f04-7b3b-b689-dbe9bfbf677d",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019d5e6e-6092-7e61-82d4-a591432e3982",
+    "sub_account": false,
+    "wallet_balance": "2600.458484845625000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2600.458484845625000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a132e0-a352-7e8b-b69c-c611088c0e69",
+    "sub_account": false,
+    "wallet_balance": "30.433704",
+    "unrealized_pnl": "0",
+    "margin_balance": "30.433704",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019db4b8-f1b6-7b7d-a1cc-40b9a7eae747",
+    "sub_account": false,
+    "wallet_balance": "1000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f1ec-e27e-78a3-be4b-21fa3e393112",
+    "sub_account": true,
+    "wallet_balance": "29.2000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "29.2000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f208-de38-7eab-b67f-3dd11d26ce98",
+    "sub_account": true,
+    "wallet_balance": "24.2000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "24.2000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019da063-7df0-736d-942e-35da5add7368",
+    "sub_account": false,
+    "wallet_balance": "100000",
+    "unrealized_pnl": "0",
+    "margin_balance": "100000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a15b57-9c94-7c4c-9130-31f0c3518a05",
+    "sub_account": false,
+    "wallet_balance": "104.95875000",
+    "unrealized_pnl": "0",
+    "margin_balance": "104.95875000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a136a9-9bc3-7e76-9c50-ac87f7afa865",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a131bb-d1c6-787b-94fe-41b95830cae5",
+    "sub_account": true,
+    "wallet_balance": "0.0850000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.0850000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f2ede-8a45-7db5-a0f6-0da78c7f4643",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1367c-3e74-7672-bc97-52e0e79335a0",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12d4e-591d-7a39-9cb2-7a617e1dced8",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f1ec-e200-7314-8605-91ad4c7a4f22",
+    "sub_account": true,
+    "wallet_balance": "29.2000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "29.2000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a08fc3-1b2f-71b7-9508-1e058b6c5bf7",
+    "sub_account": true,
+    "wallet_balance": "321.9711378606531245",
+    "unrealized_pnl": "20.00",
+    "margin_balance": "341.9711378606531245",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f2221-6c5d-7a7c-9a2c-5b7e8251503a",
+    "sub_account": true,
+    "wallet_balance": "239",
+    "unrealized_pnl": "0",
+    "margin_balance": "239",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12fc7-5406-7a44-b36d-cde7559aa044",
+    "sub_account": true,
+    "wallet_balance": "-15.24231350",
+    "unrealized_pnl": "0",
+    "margin_balance": "-15.24231350",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f7d9f-17c0-79ae-9355-9928a2d34639",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "019f2353-37eb-7967-b0bc-1bc94d86241f",
+    "sub_account": true,
+    "wallet_balance": "1.534505884845836",
+    "unrealized_pnl": "0",
+    "margin_balance": "1.534505884845836",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0e663-ca65-79dc-8319-9825ab832fa1",
+    "sub_account": true,
+    "wallet_balance": "-23.42095894",
+    "unrealized_pnl": "0",
+    "margin_balance": "-23.42095894",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13c98-d85a-7065-89b1-5013eca9a6e3",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1427c-2c7d-7741-9926-3666f8517ac8",
+    "sub_account": true,
+    "wallet_balance": "72.32000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "72.32000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1854d-beee-7119-a28c-ae01d21f973a",
+    "sub_account": true,
+    "wallet_balance": "1753.841122232500651",
+    "unrealized_pnl": "0",
+    "margin_balance": "1753.841122232500651",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1384c-5b45-7171-b02c-d378d78bd0b5",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1384c-5bd1-7338-a5ff-25086254f43b",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13ae7-5ffa-766d-b3dd-7648729d8b68",
+    "sub_account": true,
+    "wallet_balance": "9.82995480",
+    "unrealized_pnl": "0",
+    "margin_balance": "9.82995480",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13a93-487b-7912-b9ed-79a626f59d51",
+    "sub_account": true,
+    "wallet_balance": "0.0000000000000002",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.0000000000000002",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0f197-c216-745c-8d44-43383fac2587",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13ae9-9ffd-703b-85f5-544451574d0d",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13cf6-87ae-717c-8ccc-5c389cd5aa28",
+    "sub_account": true,
+    "wallet_balance": "0.0000000000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.0000000000000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13fc4-2e00-7068-891e-715bf977a8ec",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13c98-d7d4-7192-955d-adec7d41b92f",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a188f2-157c-77de-88c8-bb619fb05012",
+    "sub_account": true,
+    "wallet_balance": "282.0075106220659463",
+    "unrealized_pnl": "0",
+    "margin_balance": "282.0075106220659463",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12fd0-7394-76ac-820f-94ab1dbf5cbf",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13ab3-caf6-786f-80c8-16d3a1e52b25",
+    "sub_account": true,
+    "wallet_balance": "0.0000000000000002",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.0000000000000002",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a140d9-215c-752e-bea8-27f971513ab4",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12c86-69c0-74a0-b4e9-811ef4c31042",
+    "sub_account": true,
+    "wallet_balance": "30",
+    "unrealized_pnl": "0",
+    "margin_balance": "30",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1374c-99a6-74ba-bd0b-e4fb803ad1a1",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13787-5eb8-7cc3-8eb3-8a11c1bd0e28",
+    "sub_account": true,
+    "wallet_balance": "190",
+    "unrealized_pnl": "0",
+    "margin_balance": "190",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a109a8-f6e9-748a-aa4e-bac55b61ade9",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12b66-613d-730d-b615-3816207fc642",
+    "sub_account": true,
+    "wallet_balance": "1000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0ee65-6a5b-7d8b-9f6d-dee13a91790d",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1314f-d176-7425-9ccc-dad95b9f0d5d",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1314f-cf9e-7e48-aa8f-60b1bf1dfda4",
+    "sub_account": true,
+    "wallet_balance": "0.000000000000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.000000000000000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16346-5586-7056-aade-dd031c7576f5",
+    "sub_account": true,
+    "wallet_balance": "100.00",
+    "unrealized_pnl": "0",
+    "margin_balance": "100.00",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a12f7d-923a-7424-8099-a7a0f9bc3f35",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a137e8-1669-7677-9d51-7cbaf5eed69e",
+    "sub_account": true,
+    "wallet_balance": "70",
+    "unrealized_pnl": "0",
+    "margin_balance": "70",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a16ab7-b20c-74b0-bf9a-dc9b4a1be0b8",
+    "sub_account": true,
+    "wallet_balance": "200.00",
+    "unrealized_pnl": "0",
+    "margin_balance": "200.00",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a1674e-ee8c-7393-8281-2b33663acf0d",
+    "sub_account": true,
+    "wallet_balance": "102.00",
+    "unrealized_pnl": "0",
+    "margin_balance": "102.00",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a132f5-ff09-74e3-9ab7-d8dbbadea0b7",
+    "sub_account": true,
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a13fbe-561e-730b-b0ac-72e42f72cc51",
+    "sub_account": true,
+    "wallet_balance": "0.000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.000000",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   },
+   {
+    "account_id": "01a0ee65-69db-7a9f-b6e4-d9b8a17fe7b4",
+    "sub_account": true,
+    "wallet_balance": "2",
+    "unrealized_pnl": "0",
+    "margin_balance": "2",
+    "lockedRewards": "0",
+    "stakingRewardBalance": "0"
+   }
+  ],
+  "vaults": [
+   {
+    "vault_id": "0dba2f7e-9907-4e2b-8ac6-e38382c8852f",
+    "wallet_balance": "21947.99784828476941",
+    "unrealized_pnl": "912.3279",
+    "margin_balance": "22860.32574828476941"
+   },
+   {
+    "vault_id": "134353db-08b7-4bef-978e-36d0b7f0fa07",
+    "wallet_balance": "0.0000000000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.0000000000000000"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "wallet_balance": "7292.792482375182746",
+    "unrealized_pnl": "350.57206133",
+    "margin_balance": "7643.364543705182746"
+   },
+   {
+    "vault_id": "1b6f47f5-3ea4-4a30-b276-741683791019",
+    "wallet_balance": "47234.04194880814358",
+    "unrealized_pnl": "-118.10",
+    "margin_balance": "47115.94194880814358"
+   },
+   {
+    "vault_id": "2f6407e4-20f5-405b-bbb5-734ba7ae023a",
+    "wallet_balance": "30630.02167545776411",
+    "unrealized_pnl": "242.2500",
+    "margin_balance": "30872.27167545776411"
+   },
+   {
+    "vault_id": "370fa8e9-d857-4aa6-971f-345fcff59f94",
+    "wallet_balance": "0.0000000000000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "0.0000000000000000"
+   },
+   {
+    "vault_id": "454f93df-cf03-4ae2-aed7-eb2b9314f751",
+    "wallet_balance": "21165.27686873867198",
+    "unrealized_pnl": "556.0666",
+    "margin_balance": "21721.34346873867198"
+   },
+   {
+    "vault_id": "5856ab26-80e8-496d-aa9e-0753da261348",
+    "wallet_balance": "30629.88422548633554",
+    "unrealized_pnl": "245.60",
+    "margin_balance": "30875.48422548633554"
+   },
+   {
+    "vault_id": "64170d2d-1b33-56d0-90a9-968da364e7f9",
+    "wallet_balance": "131.3425999930012959",
+    "unrealized_pnl": "10.29001271",
+    "margin_balance": "141.6326127030012959"
+   },
+   {
+    "vault_id": "6ca47818-c365-461e-a903-797e6968adf0",
+    "wallet_balance": "46243.68232389022509",
+    "unrealized_pnl": "-489.60000000",
+    "margin_balance": "45754.08232389022509"
+   },
+   {
+    "vault_id": "7ab33fcf-cd63-49f2-bff4-79c245bea9f4",
+    "wallet_balance": "28745.79159045210142",
+    "unrealized_pnl": "-494.00",
+    "margin_balance": "28251.79159045210142"
+   },
+   {
+    "vault_id": "7ac85a5c-aa88-5d68-935e-5f319fbc2697",
+    "wallet_balance": "1696.629561524000775",
+    "unrealized_pnl": "-89.23305751",
+    "margin_balance": "1607.396504014000775"
+   },
+   {
+    "vault_id": "7b8a00a7-e3c5-4746-a528-23044b6f4913",
+    "wallet_balance": "1285.137475864546592",
+    "unrealized_pnl": "-478.61028515",
+    "margin_balance": "806.527190714546592"
+   },
+   {
+    "vault_id": "7d651b26-47d8-4911-a218-5882fd6e8016",
+    "wallet_balance": "30630.15640883200983",
+    "unrealized_pnl": "247.80",
+    "margin_balance": "30877.95640883200983"
+   },
+   {
+    "vault_id": "82ecc6f1-343c-49cf-af6a-9c95cab9ba25",
+    "wallet_balance": "28741.12490556836787",
+    "unrealized_pnl": "-500.80",
+    "margin_balance": "28240.32490556836787"
+   },
+   {
+    "vault_id": "98646efc-c860-4d4f-b0d9-a8c2a7e31bd1",
+    "wallet_balance": "28741.02689382564059",
+    "unrealized_pnl": "-498.00",
+    "margin_balance": "28243.02689382564059"
+   },
+   {
+    "vault_id": "acfc152c-a1a7-4e44-9572-37d3ce9b507d",
+    "wallet_balance": "28740.93855348024605",
+    "unrealized_pnl": "-509.20",
+    "margin_balance": "28231.73855348024605"
+   },
+   {
+    "vault_id": "b5fb30eb-e9ca-443e-a311-2987636a5d43",
+    "wallet_balance": "257.0657947805853601",
+    "unrealized_pnl": "0",
+    "margin_balance": "257.0657947805853601"
+   },
+   {
+    "vault_id": "bc528729-c359-44ed-b7d9-f992189fb0c2",
+    "wallet_balance": "52903.73271395819215",
+    "unrealized_pnl": "0",
+    "margin_balance": "52903.73271395819215"
+   },
+   {
+    "vault_id": "bee9380c-f4ed-4281-95ec-a68ddfd6903e",
+    "wallet_balance": "47085.98106650273313",
+    "unrealized_pnl": "-121.11250000",
+    "margin_balance": "46964.86856650273313"
+   },
+   {
+    "vault_id": "c26e9e06-0e39-4966-a78a-a0f7d247a481",
+    "wallet_balance": "30631.75745866058126",
+    "unrealized_pnl": "243.20",
+    "margin_balance": "30874.95745866058126"
+   },
+   {
+    "vault_id": "c93721cc-175d-4e75-a885-633c73f831d4",
+    "wallet_balance": "56895.15620489178336",
+    "unrealized_pnl": "20306.45623356",
+    "margin_balance": "77201.61243845178336"
+   },
+   {
+    "vault_id": "cb74867d-3a7c-4dce-82ed-291dbca20b72",
+    "wallet_balance": "21569.21306214037294",
+    "unrealized_pnl": "823.2000",
+    "margin_balance": "22392.41306214037294"
+   },
+   {
+    "vault_id": "d3424430-98c3-4d2c-b1d4-39d5f4539b3c",
+    "wallet_balance": "493.9435483653875868",
+    "unrealized_pnl": "129.89266829",
+    "margin_balance": "623.8362166553875868"
+   },
+   {
+    "vault_id": "d7e255eb-509f-5cd7-8e15-ab95ef639c3f",
+    "wallet_balance": "249.3368343718419062",
+    "unrealized_pnl": "0",
+    "margin_balance": "249.3368343718419062"
+   },
+   {
+    "vault_id": "de273feb-5896-40b8-9eb0-a31519e36170",
+    "wallet_balance": "28740.56711282299333",
+    "unrealized_pnl": "-520.80",
+    "margin_balance": "28219.76711282299333"
+   },
+   {
+    "vault_id": "dee0fff5-8057-4fb4-bc9b-f77447b90b9f",
+    "wallet_balance": "21686.77865868342499",
+    "unrealized_pnl": "841.3874",
+    "margin_balance": "22528.16605868342499"
+   },
+   {
+    "vault_id": "e13ee753-0743-4796-bff3-31d30c16fe4b",
+    "wallet_balance": "48160.12129836949153",
+    "unrealized_pnl": "-120.42000000",
+    "margin_balance": "48039.70129836949153"
+   },
+   {
+    "vault_id": "e7832c9a-eb65-403a-98f9-d801b5328150",
+    "wallet_balance": "30630.18542314347840",
+    "unrealized_pnl": "245.300",
+    "margin_balance": "30875.48542314347840"
+   },
+   {
+    "vault_id": "da535d9e-f492-47df-baa4-e22fd779388a",
+    "wallet_balance": "20000",
+    "unrealized_pnl": "0",
+    "margin_balance": "20000"
+   },
+   {
+    "vault_id": "0fb08f74-c4ec-4cd4-bb71-ceb115b37318",
+    "wallet_balance": "2000",
+    "unrealized_pnl": "0",
+    "margin_balance": "2000"
+   },
+   {
+    "vault_id": "a6445945-405c-5823-a8a5-4031168f2e74",
+    "wallet_balance": "100",
+    "unrealized_pnl": "0",
+    "margin_balance": "100"
+   },
+   {
+    "vault_id": "b3758b6f-6968-4ea2-9dd3-3465c57b2a7e",
+    "wallet_balance": "47500.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "47500.00000000"
+   },
+   {
+    "vault_id": "ff2cf5ba-f2a5-5b89-bdf6-f7316761a0d6",
+    "wallet_balance": "150",
+    "unrealized_pnl": "0",
+    "margin_balance": "150"
+   },
+   {
+    "vault_id": "1c5a3939-78dc-5a98-a38c-ef0bfe1e570d",
+    "wallet_balance": "100",
+    "unrealized_pnl": "0",
+    "margin_balance": "100"
+   },
+   {
+    "vault_id": "08089134-cd1c-5aa8-b9cd-b6ce6f05dcaf",
+    "wallet_balance": "0",
+    "unrealized_pnl": "0",
+    "margin_balance": "0"
+   },
+   {
+    "vault_id": "9d870f26-7c2d-4325-8a37-f3f266bfad40",
+    "wallet_balance": "30000",
+    "unrealized_pnl": "0",
+    "margin_balance": "30000"
+   },
+   {
+    "vault_id": "53cbc1e0-752e-45d4-9d77-337ab45a4826",
+    "wallet_balance": "30000",
+    "unrealized_pnl": "0",
+    "margin_balance": "30000"
+   },
+   {
+    "vault_id": "a2adb065-b6f0-57e1-8dc2-b4fa420fe7de",
+    "wallet_balance": "150",
+    "unrealized_pnl": "0",
+    "margin_balance": "150"
+   },
+   {
+    "vault_id": "c55d2567-7c3e-4d96-a520-f48622b0fb62",
+    "wallet_balance": "100",
+    "unrealized_pnl": "0",
+    "margin_balance": "100"
+   },
+   {
+    "vault_id": "de51b74b-f83b-53a6-919d-d506f404b759",
+    "wallet_balance": "100",
+    "unrealized_pnl": "0",
+    "margin_balance": "100"
+   },
+   {
+    "vault_id": "e5260d91-e04a-5c8a-b425-fac53d7feffb",
+    "wallet_balance": "100",
+    "unrealized_pnl": "0",
+    "margin_balance": "100"
+   },
+   {
+    "vault_id": "ffd98368-4170-444f-899e-29416375f021",
+    "wallet_balance": "2400",
+    "unrealized_pnl": "0",
+    "margin_balance": "2400"
+   },
+   {
+    "vault_id": "7cd3d49b-386e-48bd-99d2-47e65c61da4e",
+    "wallet_balance": "111",
+    "unrealized_pnl": "0",
+    "margin_balance": "111"
+   },
+   {
+    "vault_id": "a590831a-2c74-4b55-a7b0-8ba7a94c30c4",
+    "wallet_balance": "47500.00000000",
+    "unrealized_pnl": "0",
+    "margin_balance": "47500.00000000"
+   },
+   {
+    "vault_id": "ffd4ca4d-b40c-4994-bd31-bdb8acfd0e01",
+    "wallet_balance": "200",
+    "unrealized_pnl": "0",
+    "margin_balance": "200"
+   },
+   {
+    "vault_id": "fdbd60de-7296-4083-a200-ba2b6426e809",
+    "wallet_balance": "20000",
+    "unrealized_pnl": "0",
+    "margin_balance": "20000"
+   },
+   {
+    "vault_id": "08d73f38-0329-49ba-9228-8f42ccf9e20a",
+    "wallet_balance": "1200",
+    "unrealized_pnl": "0",
+    "margin_balance": "1200"
+   },
+   {
+    "vault_id": "d0d1915b-4121-404b-988b-577bb07ffcda",
+    "wallet_balance": "111",
+    "unrealized_pnl": "0",
+    "margin_balance": "111"
+   },
+   {
+    "vault_id": "d05191e8-6cca-42ba-992c-45fc8b672cda",
+    "wallet_balance": "1000",
+    "unrealized_pnl": "0",
+    "margin_balance": "1000"
+   },
+   {
+    "vault_id": "08137723-8076-5bb2-a67d-ef11b15feb8a",
+    "wallet_balance": "100",
+    "unrealized_pnl": "0",
+    "margin_balance": "100"
+   }
+  ],
+  "vault_shares": [
+   {
+    "vault_id": "0dba2f7e-9907-4e2b-8ac6-e38382c8852f",
+    "address": "vt_leader4_1775411644N",
+    "current_equity": "22860.32574828476941"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "0x7076a1f9285fccc00e9a732e860c3394f6e61723",
+    "current_equity": "5445.310706545374435"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "0x229cd723d64fbf2fa278c71ecfd0463df8cbaf5d",
+    "current_equity": "360.6534749207764711"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "addr_test1vpskuweu9k8qqxtcrutrz5fksws7xk0dzlejhsn7p54225gs8wg79",
+    "current_equity": "272.2655353272687218"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "addr_test1qrxy0av56w4df98efjxyemznu23653e9r7q06q7k8h2kwpm3u8pvdjpu58ghj9qwr0apzvmwfzx7hx4hwact3hzhxmfqtn5rs2",
+    "current_equity": "263.5783710019525700"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "addr_test1vpdw2xq2nu27s8knpv6rp05qulldvuhruw3vhz9p9u42kvcmmpfk8",
+    "current_equity": "239.6578804493486321"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "addr_test1qrmn2cvqrjlgl27zt0kmc4j0kt069n6e5zns9xunkk3ezllhx4scq897374uykldh3tylvkl5t84ng98q2de8ddrj9lslja4xr",
+    "current_equity": "217.8124282618149774"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "0xf771f2d7c67a862cfaa1964c4095385873293932",
+    "current_equity": "119.7934883768506526"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "addr_test1vpaur53vt5el0xvx05ehqq4jeke5ydgu3738gfj85xkhf5sc0j9g0",
+    "current_equity": "119.5259540541838729"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "addr_test1vqh7le4pruudl5fffalp435t37cwua0qsx92vfkkfa0jptq8j27s9",
+    "current_equity": "118.0218425658088420"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "0x687570122a6289b8bcd1a184fc57d252cefe6cb3",
+    "current_equity": "108.9062141309074887"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "0x46b1a5fcb70ddcbf5c4f00debb45bb43ded03cbe",
+    "current_equity": "108.9062141309074887"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "0xc05d051c493942232e4ca260d93b7663c1909cb5",
+    "current_equity": "107.0136409071315441"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "0xb92b4d250d0b12d69f0bfdf2c0cdb7dc8a8370ec",
+    "current_equity": "107.0128727916032788"
+   },
+   {
+    "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+    "address": "addr_test1vq8039q3cftynq7l33wfnk9qypv4vsy2azeeljkp3589q9se773hg",
+    "current_equity": "54.90592024125377021"
+   },
+   {
+    "vault_id": "1b6f47f5-3ea4-4a30-b276-741683791019",
+    "address": "vt_leader_1775392089N",
+    "current_equity": "44636.16884982797178"
+   },
+   {
+    "vault_id": "1b6f47f5-3ea4-4a30-b276-741683791019",
+    "address": "vt_dep_a_1775392101N",
+    "current_equity": "2479.773098980171804"
+   },
+   {
+    "vault_id": "2f6407e4-20f5-405b-bbb5-734ba7ae023a",
+    "address": "vt_leader2_1775411472N",
+    "current_equity": "30872.27167545776412"
+   },
+   {
+    "vault_id": "454f93df-cf03-4ae2-aed7-eb2b9314f751",
+    "address": "vt_leader4_1775400971N",
+    "current_equity": "21721.34346873867198"
+   },
+   {
+    "vault_id": "5856ab26-80e8-496d-aa9e-0753da261348",
+    "address": "vt_leader2_1775406075N",
+    "current_equity": "30875.48422548633555"
+   },
+   {
+    "vault_id": "64170d2d-1b33-56d0-90a9-968da364e7f9",
+    "address": "addr_test1qzuc8t2ewn68s9hl60wjel5k5j43rkcnxfguf5m7jtykve6fe770l0390ajvelm2wp4238xt0aha5a28f39f9r20w6dq66wjd3",
+    "current_equity": "113.3060901624010367"
+   },
+   {
+    "vault_id": "64170d2d-1b33-56d0-90a9-968da364e7f9",
+    "address": "addr_test1qpz5859zevduv03ag5kgagsuzvzvjt8u3s0efrpwt8ark56fac82yuejvwrh7t9cg8m4zya4zx55thh29m6va5nyxwsq9vagav",
+    "current_equity": "28.32652254060025918"
+   },
+   {
+    "vault_id": "6ca47818-c365-461e-a903-797e6968adf0",
+    "address": "vt_leader_1775400557N",
+    "current_equity": "43345.97412083298623"
+   },
+   {
+    "vault_id": "6ca47818-c365-461e-a903-797e6968adf0",
+    "address": "vt_dep_a_1775400570N",
+    "current_equity": "2408.108203057238860"
+   },
+   {
+    "vault_id": "7ab33fcf-cd63-49f2-bff4-79c245bea9f4",
+    "address": "vt_leader3_1775411534N",
+    "current_equity": "28251.79159045210142"
+   },
+   {
+    "vault_id": "7ac85a5c-aa88-5d68-935e-5f319fbc2697",
+    "address": "addr_test1qzcmth9j9xv46jrf45q02t0agtzm8pxm6ghcxadgwrqx7wzdvasxfzcs9vfyndpwfdnmhjl3229gehwn0czafp0k5mesexqr2y",
+    "current_equity": "1607.396504014000775"
+   },
+   {
+    "vault_id": "7b8a00a7-e3c5-4746-a528-23044b6f4913",
+    "address": "addr_test1qrjqwp2pw7g6jlheyqj2rl80hyvr8f0aycnk89dc8ekzl7x6mcyjaywkkggdl7qcjqps2yddpmt2tgj4yej93hyadqzqmpkfun",
+    "current_equity": "360.1257765717657481"
+   },
+   {
+    "vault_id": "7b8a00a7-e3c5-4746-a528-23044b6f4913",
+    "address": "addr_test1qz9xl8kkepwm39nususa32yfp0nfv5apn4kf7datsj5an4phnqh5f355yz43l49vq8hnxsx39h7vlhpw2ktvs656a97slpxqz3",
+    "current_equity": "178.6513001249257117"
+   },
+   {
+    "vault_id": "7b8a00a7-e3c5-4746-a528-23044b6f4913",
+    "address": "addr_test1qp5rmw8ykj59yhwferpq74v8a9u6jtgv2pjwhh5epvmecmwchnhfuj502gvddksa8lqpmvmd75h0aw74xqqehdnm585st80rtz",
+    "current_equity": "177.9631973550748984"
+   },
+   {
+    "vault_id": "7b8a00a7-e3c5-4746-a528-23044b6f4913",
+    "address": "addr_test1qzuvet8pfrr6pxt65x7mzmqwktsm3rsxhkue9cgaxjuv2tqdteuhvdz9e2af0cmaa6mat8sectwtym4wm9tdqtp5aa3s5sv8sa",
+    "current_equity": "89.78691666278023379"
+   },
+   {
+    "vault_id": "7d651b26-47d8-4911-a218-5882fd6e8016",
+    "address": "vt_leader2_1775400863N",
+    "current_equity": "30877.95640883200983"
+   },
+   {
+    "vault_id": "82ecc6f1-343c-49cf-af6a-9c95cab9ba25",
+    "address": "vt_leader3_1775409259N",
+    "current_equity": "28240.32490556836787"
+   },
+   {
+    "vault_id": "98646efc-c860-4d4f-b0d9-a8c2a7e31bd1",
+    "address": "vt_leader3_1775406129N",
+    "current_equity": "28243.02689382564059"
+   },
+   {
+    "vault_id": "acfc152c-a1a7-4e44-9572-37d3ce9b507d",
+    "address": "vt_leader3_1775400916N",
+    "current_equity": "28231.73855348024605"
+   },
+   {
+    "vault_id": "b5fb30eb-e9ca-443e-a311-2987636a5d43",
+    "address": "addr_test1qzdtsq40gcmq3kvgj3g8gs307k7e4agphrs0smvg6qc3grlm3wcsfgvsd3mwhkpwtlhvscx7gnem2g4l76ucpenzxk7syt4dfm",
+    "current_equity": "257.0657947805853601"
+   },
+   {
+    "vault_id": "bc528729-c359-44ed-b7d9-f992189fb0c2",
+    "address": "vt_leader_1775411176N",
+    "current_equity": "45013.91589045842634"
+   },
+   {
+    "vault_id": "bc528729-c359-44ed-b7d9-f992189fb0c2",
+    "address": "addr_test1qr8qrf3mj6mnzfmyfcvc9xxrx69u7kk2etly2qprd3c4cg03rtmm5mhrm9u4elelv58qj5308d5lcs278jzyrv3pcfhsphp8dj",
+    "current_equity": "5001.937559561849395"
+   },
+   {
+    "vault_id": "bc528729-c359-44ed-b7d9-f992189fb0c2",
+    "address": "vt_dep_a_1775411188N",
+    "current_equity": "2500.765611765844028"
+   },
+   {
+    "vault_id": "bc528729-c359-44ed-b7d9-f992189fb0c2",
+    "address": "addr_test1qp5rmw8ykj59yhwferpq74v8a9u6jtgv2pjwhh5epvmecmwchnhfuj502gvddksa8lqpmvmd75h0aw74xqqehdnm585st80rtz",
+    "current_equity": "186.9999999975052591"
+   },
+   {
+    "vault_id": "bc528729-c359-44ed-b7d9-f992189fb0c2",
+    "address": "addr_test1qzdtsq40gcmq3kvgj3g8gs307k7e4agphrs0smvg6qc3grlm3wcsfgvsd3mwhkpwtlhvscx7gnem2g4l76ucpenzxk7syt4dfm",
+    "current_equity": "100.1136521796456875"
+   },
+   {
+    "vault_id": "bc528729-c359-44ed-b7d9-f992189fb0c2",
+    "address": "addr_test1qzuuxreu97usqhhhz8mfd9lt79347284qdy5s20zv8jnr3khf4j24tat99jj5prygh8cgesqxptdr5sxj9ecy6fz6amqps0wkm",
+    "current_equity": "99.99999999492145210"
+   },
+   {
+    "vault_id": "bee9380c-f4ed-4281-95ec-a68ddfd6903e",
+    "address": "vt_leader_1775408889N",
+    "current_equity": "44493.03337879206297"
+   },
+   {
+    "vault_id": "bee9380c-f4ed-4281-95ec-a68ddfd6903e",
+    "address": "vt_dep_a_1775408902N",
+    "current_equity": "2471.835187710670165"
+   },
+   {
+    "vault_id": "c26e9e06-0e39-4966-a78a-a0f7d247a481",
+    "address": "vt_leader2_1775392406N",
+    "current_equity": "30874.95745866058125"
+   },
+   {
+    "vault_id": "c93721cc-175d-4e75-a885-633c73f831d4",
+    "address": "addr_test1qppu68nh8f0nukhgknjmvfan62jt5j6wrfj7qr3wy6a5xlt0n7xj58l6xlws8k89tj06yak2yvau8a5cndfc3kjlz8nqmgqkmg",
+    "current_equity": "77201.61243845178336"
+   },
+   {
+    "vault_id": "cb74867d-3a7c-4dce-82ed-291dbca20b72",
+    "address": "vt_leader4_1775409314N",
+    "current_equity": "22392.41306214037294"
+   },
+   {
+    "vault_id": "d3424430-98c3-4d2c-b1d4-39d5f4539b3c",
+    "address": "addr_test1qrjqwp2pw7g6jlheyqj2rl80hyvr8f0aycnk89dc8ekzl7x6mcyjaywkkggdl7qcjqps2yddpmt2tgj4yej93hyadqzqmpkfun",
+    "current_equity": "447.3773953762529913"
+   },
+   {
+    "vault_id": "d3424430-98c3-4d2c-b1d4-39d5f4539b3c",
+    "address": "addr_test1qz9xl8kkepwm39nususa32yfp0nfv5apn4kf7datsj5an4phnqh5f355yz43l49vq8hnxsx39h7vlhpw2ktvs656a97slpxqz3",
+    "current_equity": "176.4588212791345953"
+   },
+   {
+    "vault_id": "d7e255eb-509f-5cd7-8e15-ab95ef639c3f",
+    "address": "addr_test1qza3hz8t5clmj2sxlwmnfl7p88vp0ys8sumtvrlywwpqzx7tmv674pp6cgjtgksdp8z4al3tmv86xhncx8az2xl2e3csehjctr",
+    "current_equity": "209.4429408723472012"
+   },
+   {
+    "vault_id": "d7e255eb-509f-5cd7-8e15-ab95ef639c3f",
+    "address": "addr_test1qpsemj96k72fttx68vgrj656qws8mz90h3x3uclfvpr4hqaw4p707x38mfrqs549pw5jhd2h05vh0n85uc5pnq2dgnfq8p28y9",
+    "current_equity": "39.89389349949470499"
+   },
+   {
+    "vault_id": "de273feb-5896-40b8-9eb0-a31519e36170",
+    "address": "vt_leader3_1775392458N",
+    "current_equity": "28219.76711282299333"
+   },
+   {
+    "vault_id": "dee0fff5-8057-4fb4-bc9b-f77447b90b9f",
+    "address": "vt_leader4_1775406186N",
+    "current_equity": "22528.16605868342500"
+   },
+   {
+    "vault_id": "e13ee753-0743-4796-bff3-31d30c16fe4b",
+    "address": "vt_leader_1775405769N",
+    "current_equity": "44573.48093721112297"
+   },
+   {
+    "vault_id": "e13ee753-0743-4796-bff3-31d30c16fe4b",
+    "address": "vt_dep_a_1775405783N",
+    "current_equity": "2476.295395683168186"
+   },
+   {
+    "vault_id": "e13ee753-0743-4796-bff3-31d30c16fe4b",
+    "address": "addr_test1qp5rmw8ykj59yhwferpq74v8a9u6jtgv2pjwhh5epvmecmwchnhfuj502gvddksa8lqpmvmd75h0aw74xqqehdnm585st80rtz",
+    "current_equity": "989.9249654752003731"
+   },
+   {
+    "vault_id": "e7832c9a-eb65-403a-98f9-d801b5328150",
+    "address": "vt_leader2_1775409201N",
+    "current_equity": "30875.48542314347841"
+   },
+   {
+    "vault_id": "da535d9e-f492-47df-baa4-e22fd779388a",
+    "address": "vt_leader4_1775388430N",
+    "current_equity": "20000"
+   },
+   {
+    "vault_id": "0fb08f74-c4ec-4cd4-bb71-ceb115b37318",
+    "address": "addr_test1qqv3k0h4v4yatu29p8chq4pt9fkhhuk5dp3reycd9s06mfac32xk02gt5yvwkpeuvuc6xkll8tac25hxch00rsam85fsw0gcdq",
+    "current_equity": "2000"
+   },
+   {
+    "vault_id": "a6445945-405c-5823-a8a5-4031168f2e74",
+    "address": "0x1a8e6b06288720940b2036f22a971530da02c149",
+    "current_equity": "99"
+   },
+   {
+    "vault_id": "a6445945-405c-5823-a8a5-4031168f2e74",
+    "address": "addr_test1vpsme84q0mk7jmgdcf5ugww3c7604xyyjz87ddrsem9jfcgnngu90",
+    "current_equity": "1"
+   },
+   {
+    "vault_id": "b3758b6f-6968-4ea2-9dd3-3465c57b2a7e",
+    "address": "vt_leader_1775388018N",
+    "current_equity": "45000.00000000"
+   },
+   {
+    "vault_id": "b3758b6f-6968-4ea2-9dd3-3465c57b2a7e",
+    "address": "vt_dep_a_1775388032N",
+    "current_equity": "2500.00000000"
+   },
+   {
+    "vault_id": "ff2cf5ba-f2a5-5b89-bdf6-f7316761a0d6",
+    "address": "addr_test1vzukdh03mc2uv4rn2603mxgtl6h5enhfclm3ghyxh6u244sh59ttg",
+    "current_equity": "150"
+   },
+   {
+    "vault_id": "1c5a3939-78dc-5a98-a38c-ef0bfe1e570d",
+    "address": "0x687570122a6289b8bcd1a184fc57d252cefe6cb3",
+    "current_equity": "100"
+   },
+   {
+    "vault_id": "9d870f26-7c2d-4325-8a37-f3f266bfad40",
+    "address": "vt_leader3_1775388379N",
+    "current_equity": "30000"
+   },
+   {
+    "vault_id": "53cbc1e0-752e-45d4-9d77-337ab45a4826",
+    "address": "vt_leader2_1775388318N",
+    "current_equity": "30000"
+   },
+   {
+    "vault_id": "a2adb065-b6f0-57e1-8dc2-b4fa420fe7de",
+    "address": "addr_test1vzpe53w0h4j2fu83eh0fun7575ezmqnpk3l5c2m2sawyn3sh83ugp",
+    "current_equity": "150"
+   },
+   {
+    "vault_id": "c55d2567-7c3e-4d96-a520-f48622b0fb62",
+    "address": "addr_test1qqqrzldlnw5y3a327ywhy09tklc2kpsxpy3r04399mfahlsjzfat7kqe8q88eespxylmackh2d5ehzsse0tzvpue4e3sra2k77",
+    "current_equity": "100"
+   },
+   {
+    "vault_id": "de51b74b-f83b-53a6-919d-d506f404b759",
+    "address": "addr_test1vpsme84q0mk7jmgdcf5ugww3c7604xyyjz87ddrsem9jfcgnngu90",
+    "current_equity": "100"
+   },
+   {
+    "vault_id": "e5260d91-e04a-5c8a-b425-fac53d7feffb",
+    "address": "addr_test1qzuuxreu97usqhhhz8mfd9lt79347284qdy5s20zv8jnr3khf4j24tat99jj5prygh8cgesqxptdr5sxj9ecy6fz6amqps0wkm",
+    "current_equity": "100"
+   },
+   {
+    "vault_id": "ffd98368-4170-444f-899e-29416375f021",
+    "address": "addr_test1qpmkqrx6sty2xjm8293clrt8vq2arrmzlkm2498758nl6xf5hsr0yqgx7xyxh6a7sje4un90hqql29q7x4x7ux88tzrqdctchr",
+    "current_equity": "2400"
+   },
+   {
+    "vault_id": "7cd3d49b-386e-48bd-99d2-47e65c61da4e",
+    "address": "addr_test1qzjvuwdz7nq9s92nch9zev4nan4a5uqwyr43p60m6lvt63908dxs9wtjzx9yhrem00gwsr7jhaysqpk3l9nps2ucjgsqhdwdya",
+    "current_equity": "111"
+   },
+   {
+    "vault_id": "a590831a-2c74-4b55-a7b0-8ba7a94c30c4",
+    "address": "vt_leader_1775391537N",
+    "current_equity": "45000.00000000"
+   },
+   {
+    "vault_id": "a590831a-2c74-4b55-a7b0-8ba7a94c30c4",
+    "address": "vt_dep_a_1775391550N",
+    "current_equity": "2500.00000000"
+   },
+   {
+    "vault_id": "ffd4ca4d-b40c-4994-bd31-bdb8acfd0e01",
+    "address": "addr_test1qzuuxreu97usqhhhz8mfd9lt79347284qdy5s20zv8jnr3khf4j24tat99jj5prygh8cgesqxptdr5sxj9ecy6fz6amqps0wkm",
+    "current_equity": "200"
+   },
+   {
+    "vault_id": "fdbd60de-7296-4083-a200-ba2b6426e809",
+    "address": "vt_leader4_1775392513N",
+    "current_equity": "20000"
+   },
+   {
+    "vault_id": "08d73f38-0329-49ba-9228-8f42ccf9e20a",
+    "address": "addr_test1qp3nxvtdj2nxwc7p0slvss2s4mx7zg0ksqe565r6a2n4wngq60jnhyxvqrce2gek08sjd58h9z8pmsyvzm3nxzdttq0qdxzyes",
+    "current_equity": "1200"
+   },
+   {
+    "vault_id": "d0d1915b-4121-404b-988b-577bb07ffcda",
+    "address": "addr_test1qpk9tavl5snstqrjp6cltety24z8tfea78qsz7ffgg7y8qpt7s4kshc4dzsudzrnza3lpu39c7xdvlah9myw9uet4fuqghhlcv",
+    "current_equity": "111"
+   },
+   {
+    "vault_id": "d05191e8-6cca-42ba-992c-45fc8b672cda",
+    "address": "addr_test1qr8qrf3mj6mnzfmyfcvc9xxrx69u7kk2etly2qprd3c4cg03rtmm5mhrm9u4elelv58qj5308d5lcs278jzyrv3pcfhsphp8dj",
+    "current_equity": "1000"
+   },
+   {
+    "vault_id": "08137723-8076-5bb2-a67d-ef11b15feb8a",
+    "address": "addr_test1vpaur53vt5el0xvx05ehqq4jeke5ydgu3738gfj85xkhf5sc0j9g0",
+    "current_equity": "100"
+   }
+  ]
+ },
+ "result": {
+  "ratio": 0.002429795106675595,
+  "status": "Incomplete",
+  "explained_by": "8 unpriced reserve asset(s)",
+  "gap_usd": -39519629.17704665,
+  "gap_pct": -99.75702048933243,
+  "gap_text": "Gap −$39,519,629 · −99.7570%",
+  "open_notes": [
+   "Commission balances are withdrawable liabilities; their public source is pending from Strike, so they are not added yet.",
+   "Locked rewards are inside wallet_balance and counted once as owed (founder, 23 Oct)."
+  ],
+  "in_transit": {
+   "tolerance_usd": 10000,
+   "note": "Known in-transit: a large LP withdrawal on Ethereum and Cardano USDCx deposits / USDC withdrawals being bridged back through the IOG bridge (per Strike). The missing amount is not added or faked."
+  },
+  "vault_crosscheck": {
+   "vault_accounts_usd": 917296.1515725016,
+   "depositor_shares_usd": 917296.1515725018,
+   "difference_usd": -1.1641532182693481e-10,
+   "per_vault": [
+    {
+     "vault_id": "0dba2f7e-9907-4e2b-8ac6-e38382c8852f",
+     "vault_account_usd": 22860.32574828477,
+     "depositor_shares_usd": 22860.32574828477,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "134353db-08b7-4bef-978e-36d0b7f0fa07",
+     "vault_account_usd": 0,
+     "depositor_shares_usd": 0,
+     "depositors": 0,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "1b53cd18-3229-5c29-b83c-9fdb5fd2b97b",
+     "vault_account_usd": 7643.364543705183,
+     "depositor_shares_usd": 7643.364543705182,
+     "depositors": 14,
+     "difference_usd": 9.094947017729282e-13
+    },
+    {
+     "vault_id": "1b6f47f5-3ea4-4a30-b276-741683791019",
+     "vault_account_usd": 47115.94194880815,
+     "depositor_shares_usd": 47115.94194880814,
+     "depositors": 2,
+     "difference_usd": 7.275957614183426e-12
+    },
+    {
+     "vault_id": "2f6407e4-20f5-405b-bbb5-734ba7ae023a",
+     "vault_account_usd": 30872.271675457763,
+     "depositor_shares_usd": 30872.271675457763,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "370fa8e9-d857-4aa6-971f-345fcff59f94",
+     "vault_account_usd": 0,
+     "depositor_shares_usd": 0,
+     "depositors": 0,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "454f93df-cf03-4ae2-aed7-eb2b9314f751",
+     "vault_account_usd": 21721.34346873867,
+     "depositor_shares_usd": 21721.343468738673,
+     "depositors": 1,
+     "difference_usd": -3.637978807091713e-12
+    },
+    {
+     "vault_id": "5856ab26-80e8-496d-aa9e-0753da261348",
+     "vault_account_usd": 30875.484225486332,
+     "depositor_shares_usd": 30875.484225486336,
+     "depositors": 1,
+     "difference_usd": -3.637978807091713e-12
+    },
+    {
+     "vault_id": "64170d2d-1b33-56d0-90a9-968da364e7f9",
+     "vault_account_usd": 141.6326127030013,
+     "depositor_shares_usd": 141.63261270300129,
+     "depositors": 2,
+     "difference_usd": 2.842170943040401e-14
+    },
+    {
+     "vault_id": "6ca47818-c365-461e-a903-797e6968adf0",
+     "vault_account_usd": 45754.08232389022,
+     "depositor_shares_usd": 45754.08232389022,
+     "depositors": 2,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "7ab33fcf-cd63-49f2-bff4-79c245bea9f4",
+     "vault_account_usd": 28251.7915904521,
+     "depositor_shares_usd": 28251.7915904521,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "7ac85a5c-aa88-5d68-935e-5f319fbc2697",
+     "vault_account_usd": 1607.3965040140008,
+     "depositor_shares_usd": 1607.3965040140008,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "7b8a00a7-e3c5-4746-a528-23044b6f4913",
+     "vault_account_usd": 806.5271907145466,
+     "depositor_shares_usd": 806.5271907145466,
+     "depositors": 4,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "7d651b26-47d8-4911-a218-5882fd6e8016",
+     "vault_account_usd": 30877.956408832008,
+     "depositor_shares_usd": 30877.95640883201,
+     "depositors": 1,
+     "difference_usd": -3.637978807091713e-12
+    },
+    {
+     "vault_id": "82ecc6f1-343c-49cf-af6a-9c95cab9ba25",
+     "vault_account_usd": 28240.32490556837,
+     "depositor_shares_usd": 28240.324905568366,
+     "depositors": 1,
+     "difference_usd": 3.637978807091713e-12
+    },
+    {
+     "vault_id": "98646efc-c860-4d4f-b0d9-a8c2a7e31bd1",
+     "vault_account_usd": 28243.02689382564,
+     "depositor_shares_usd": 28243.02689382564,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "acfc152c-a1a7-4e44-9572-37d3ce9b507d",
+     "vault_account_usd": 28231.738553480245,
+     "depositor_shares_usd": 28231.738553480245,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "b5fb30eb-e9ca-443e-a311-2987636a5d43",
+     "vault_account_usd": 257.06579478058535,
+     "depositor_shares_usd": 257.06579478058535,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "bc528729-c359-44ed-b7d9-f992189fb0c2",
+     "vault_account_usd": 52903.73271395819,
+     "depositor_shares_usd": 52903.73271395818,
+     "depositors": 6,
+     "difference_usd": 7.275957614183426e-12
+    },
+    {
+     "vault_id": "bee9380c-f4ed-4281-95ec-a68ddfd6903e",
+     "vault_account_usd": 46964.86856650273,
+     "depositor_shares_usd": 46964.86856650273,
+     "depositors": 2,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "c26e9e06-0e39-4966-a78a-a0f7d247a481",
+     "vault_account_usd": 30874.95745866058,
+     "depositor_shares_usd": 30874.95745866058,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "c93721cc-175d-4e75-a885-633c73f831d4",
+     "vault_account_usd": 77201.61243845179,
+     "depositor_shares_usd": 77201.61243845179,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "cb74867d-3a7c-4dce-82ed-291dbca20b72",
+     "vault_account_usd": 22392.413062140375,
+     "depositor_shares_usd": 22392.413062140375,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "d3424430-98c3-4d2c-b1d4-39d5f4539b3c",
+     "vault_account_usd": 623.8362166553876,
+     "depositor_shares_usd": 623.8362166553876,
+     "depositors": 2,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "d7e255eb-509f-5cd7-8e15-ab95ef639c3f",
+     "vault_account_usd": 249.33683437184192,
+     "depositor_shares_usd": 249.33683437184192,
+     "depositors": 2,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "de273feb-5896-40b8-9eb0-a31519e36170",
+     "vault_account_usd": 28219.767112822996,
+     "depositor_shares_usd": 28219.767112822992,
+     "depositors": 1,
+     "difference_usd": 3.637978807091713e-12
+    },
+    {
+     "vault_id": "dee0fff5-8057-4fb4-bc9b-f77447b90b9f",
+     "vault_account_usd": 22528.166058683426,
+     "depositor_shares_usd": 22528.166058683426,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "e13ee753-0743-4796-bff3-31d30c16fe4b",
+     "vault_account_usd": 48039.701298369495,
+     "depositor_shares_usd": 48039.70129836949,
+     "depositors": 3,
+     "difference_usd": 7.275957614183426e-12
+    },
+    {
+     "vault_id": "e7832c9a-eb65-403a-98f9-d801b5328150",
+     "vault_account_usd": 30875.485423143477,
+     "depositor_shares_usd": 30875.48542314348,
+     "depositors": 1,
+     "difference_usd": -3.637978807091713e-12
+    },
+    {
+     "vault_id": "da535d9e-f492-47df-baa4-e22fd779388a",
+     "vault_account_usd": 20000,
+     "depositor_shares_usd": 20000,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "0fb08f74-c4ec-4cd4-bb71-ceb115b37318",
+     "vault_account_usd": 2000,
+     "depositor_shares_usd": 2000,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "a6445945-405c-5823-a8a5-4031168f2e74",
+     "vault_account_usd": 100,
+     "depositor_shares_usd": 100,
+     "depositors": 2,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "b3758b6f-6968-4ea2-9dd3-3465c57b2a7e",
+     "vault_account_usd": 47500,
+     "depositor_shares_usd": 47500,
+     "depositors": 2,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "ff2cf5ba-f2a5-5b89-bdf6-f7316761a0d6",
+     "vault_account_usd": 150,
+     "depositor_shares_usd": 150,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "1c5a3939-78dc-5a98-a38c-ef0bfe1e570d",
+     "vault_account_usd": 100,
+     "depositor_shares_usd": 100,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "08089134-cd1c-5aa8-b9cd-b6ce6f05dcaf",
+     "vault_account_usd": 0,
+     "depositor_shares_usd": 0,
+     "depositors": 0,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "9d870f26-7c2d-4325-8a37-f3f266bfad40",
+     "vault_account_usd": 30000,
+     "depositor_shares_usd": 30000,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "53cbc1e0-752e-45d4-9d77-337ab45a4826",
+     "vault_account_usd": 30000,
+     "depositor_shares_usd": 30000,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "a2adb065-b6f0-57e1-8dc2-b4fa420fe7de",
+     "vault_account_usd": 150,
+     "depositor_shares_usd": 150,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "c55d2567-7c3e-4d96-a520-f48622b0fb62",
+     "vault_account_usd": 100,
+     "depositor_shares_usd": 100,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "de51b74b-f83b-53a6-919d-d506f404b759",
+     "vault_account_usd": 100,
+     "depositor_shares_usd": 100,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "e5260d91-e04a-5c8a-b425-fac53d7feffb",
+     "vault_account_usd": 100,
+     "depositor_shares_usd": 100,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "ffd98368-4170-444f-899e-29416375f021",
+     "vault_account_usd": 2400,
+     "depositor_shares_usd": 2400,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "7cd3d49b-386e-48bd-99d2-47e65c61da4e",
+     "vault_account_usd": 111,
+     "depositor_shares_usd": 111,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "a590831a-2c74-4b55-a7b0-8ba7a94c30c4",
+     "vault_account_usd": 47500,
+     "depositor_shares_usd": 47500,
+     "depositors": 2,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "ffd4ca4d-b40c-4994-bd31-bdb8acfd0e01",
+     "vault_account_usd": 200,
+     "depositor_shares_usd": 200,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "fdbd60de-7296-4083-a200-ba2b6426e809",
+     "vault_account_usd": 20000,
+     "depositor_shares_usd": 20000,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "08d73f38-0329-49ba-9228-8f42ccf9e20a",
+     "vault_account_usd": 1200,
+     "depositor_shares_usd": 1200,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "d0d1915b-4121-404b-988b-577bb07ffcda",
+     "vault_account_usd": 111,
+     "depositor_shares_usd": 111,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "d05191e8-6cca-42ba-992c-45fc8b672cda",
+     "vault_account_usd": 1000,
+     "depositor_shares_usd": 1000,
+     "depositors": 1,
+     "difference_usd": 0
+    },
+    {
+     "vault_id": "08137723-8076-5bb2-a67d-ef11b15feb8a",
+     "vault_account_usd": 100,
+     "depositor_shares_usd": 100,
+     "depositors": 1,
+     "difference_usd": 0
+    }
+   ]
+  }
+ },
+ "content_sha256": "fec0f3f7f81f47e846bfd2e663ac351213cc899b964cf82183ff5bed01dc7a2d"
+}
